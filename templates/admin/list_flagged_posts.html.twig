@@ -1,0 +1,115 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+    <div class="row">
+        <div class="card col-12 mt-3">
+
+            <div class="card-header border-0">
+                <div class="row mb-3">
+                    <h2>List flagged Posts</h2>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 mb-3">
+                        Total: {{ dataWrapper|length}} Flagged Posts
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-striped table-valign-middle text-center">
+                <thead>
+                <tr>
+                    <th>Post</th>
+                    <th>Author</th>
+                    {% if is_granted('ROLE_MASTER') %}
+                        <th></th>
+                    {% endif %}
+                    <th>Email</th>
+                    <th>Report Reason</th>
+                    <th>Status</th>
+                    <th>Flagged</th>
+                    {% if is_granted('ROLE_MASTER') %}
+                        <th>by</th>
+                    {% endif %}
+                    <th>Updated</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for flaggedPost in dataWrapper %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('app_post_view_page', {'slug': flaggedPost.postSlug }) }}">
+                                <button class="btn btn-sm btn-secondary">View</button>
+                            </a>
+                        </td>
+                        <td>
+                            <a href='#' class="trigger-empty-modal tooltip-show" title="contact user" data-path="{{ path('app_member_details', {'slug': flaggedPost.authorSlug })}}">
+                                <i class="far fa-envelope"></i>
+                            </a>
+                        </td>
+                        {% if is_granted('ROLE_MASTER') %}
+                            <td>
+                                <a href="{{ path('app_user_account', { '_switch_user': flaggedPost.authorEmail }) }}"
+                                   class="fas fa-random">
+                                </a>
+                            </td>
+                        {% endif %}
+                        <td>
+                            {{ flaggedPost.authorEmail }}
+                        </td>
+                        <td>
+                            {{ flaggedPost.flagReason }}
+                        </td>
+                        <td>
+                            {{ flaggedPost.flagStatus }}
+                        </td>
+                        <td>
+                            {{ flaggedPost.flagCreatedAt|date("d.m.y") }}
+                        </td>
+                        {% if is_granted('ROLE_MASTER') %}
+                            <td>
+                                <a href="{{ path('app_user_account', { '_switch_user': flaggedPost.reportingMemberEmail }) }}"
+                                   class="fas fa-random">
+                                </a>
+                            </td>
+                        {% endif %}
+                        <td>
+                            {{ flaggedPost.FlagUpdatedAt|date("d.m.y") }}
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-sm btn-primary dropdown-toggle"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    {% if flaggedPost.flagStatusId != 3 %}
+                                        <a class="dropdown-item" href="{{ path('app_admin_post_flagged_status', {'id': flaggedPost.reportId, 'statusId': 2}) }}">Disregard Report</a>
+                                        <a class="dropdown-item" href="{{ path('app_admin_post_flagged_status', {'id': flaggedPost.reportId, 'statusId': 3}) }}">Mark Inappropriate</a>
+                                    {% endif %}
+                                        <a class="dropdown-item" href="{{ path('app_admin_post_flagged_status', {'id': flaggedPost.reportId, 'statusId': 4}) }}">Issue Fixed</a>
+                                    {% if is_granted('ROLE_MASTER') %}
+                                        <a class="dropdown-item" href="{{ path('app_user_delete_post', {'id': flaggedPost.postId}) }}">Delete Post</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="{% if is_granted('ROLE_MASTER') %}11{% else %}8{% endif %}" class="text-center">
+                            No flagged Posts
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="mt-4">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

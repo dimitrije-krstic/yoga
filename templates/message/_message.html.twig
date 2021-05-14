@@ -1,0 +1,62 @@
+{% if app.user is not null and message.senderId == app.user.id %}
+    {% set floatRight = true %}
+{% else %}
+    {% set floatRight = false %}
+{% endif %}
+
+<div class="direct-chat-msg {% if floatRight %}right{% endif %}">
+    <div class="direct-chat-infos clearfix">
+        <span class="direct-chat-timestamp {% if floatRight %}float-right{% endif %}">
+            {% if not floatRight and message.senderName %} {{ message.senderName|split(' ')[0] }},{% endif %} {{message.createdAt|ago }}
+        </span>
+    </div>
+
+    {% if floatRight or (activeTab is defined and activeTab != 'forum' and activeTab != 'notifications' ) %}
+        <img class="direct-chat-img" src="{{ asset(message.senderImage) }}" style="max-width:40px;">
+    {% else %}
+        <a href='#' class="trigger-empty-modal" title="member info"
+           data-path="{{ path('app_member_details', {'slug': message.senderSlug })}}">
+            <img class="direct-chat-img" src="{{ asset(message.senderImage) }}" style="max-width:40px;">
+        </a>
+    {% endif %}
+
+    {% if message.image %}
+        <div class="{% if floatRight %}float-right{% else %}float-left{% endif %}"
+             style="{% if floatRight %}margin-right:7px;{% else %}margin-left:7px;{% endif %} max-width:85%"
+        >
+            <img src="{{ asset( message.image) }}" style="width: 100%; border-radius:20px;" loading="lazy">
+        </div>
+    {% else %}
+        <div class="direct-chat-text {% if floatRight %}float-right{% else %}float-left{% endif %}"
+             style="{% if floatRight %}margin-right:7px;{% else %}margin-left:7px;{% endif %} max-width:85%"
+        >
+            <div class="chat-text-wrapper">
+                {{ message.content|striptags|format_links|raw|nl2br }}
+
+                {% if currentRoute == 'app_member_public_forum' %}
+                    {% set link = extract_link(message.content) %}
+                    {% if link != '' %}
+                        {% set object = create_open_graph_image(link) %}
+                        {% if object is not null %}
+                            <div class="raw mt-3 mb-3">
+                                <div class="col-12">
+                                    <hr>
+                                    <b>{{ object.siteName }}</b>
+                                </div>
+                                <div class="col-12 col-md-8 col-sm-9 mb-3">
+                                    {{ object.title }}
+                                </div>
+                                <div class="col-12 col-md-8 col-sm-9 text-left">
+                                    <a href="{{ object.url }}" rel="external nofollow noopener" target="_blank">
+                                        <img src="{{ object.image }}" style="width: 100%; border-radius:20px;" loading="lazy">
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+</div>

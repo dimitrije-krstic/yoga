@@ -1,0 +1,46 @@
+{% set forumPath = path('app_message_center', {'activeTab': 'forum'})  %}
+{% set messagesPath = path('app_message_center', {'activeTab': 'inbox'}) %}
+{% set eventsPath = path('app_cockpit_event_list')  %}
+
+{% if is_granted('ROLE_USER') %}
+    <!-- MESSAGES -->
+    <li class="nav-item {% if currentPath == messagesPath %}active{% endif %}">
+        <a class="tooltip-show nav-link" href="{{ messagesPath }}" title="messages">
+            <i class="fas fa-envelope" id="navbarUnreadMessages" data-path="{{ path('app_member_message_count_all_unread') }}"></i>
+        </a>
+    </li>
+
+    <!-- FORUM -->
+    <li class="nav-item {% if currentPath == forumPath %}active{% endif %}">
+        <a class="nav-link tooltip-show" href="{{ forumPath }}"  title="my forums">
+            <i class="fas fa-comments" id="navbarUnreadForum" data-path="{{ path('app_member_message_forum_count_unread') }}"></i>
+        </a>
+    </li>
+    {#
+    <!-- EVENTS -->
+    <li class="nav-item {% if currentPath == eventsPath %}active{% endif %}">
+        <a class="tooltip-show nav-link" href="{{ eventsPath  }}" title="my events">
+            <i class="fas fa-calendar-alt" id="navbarEventUpdates" data-path="{{ path('app_cockpit_count_event_updates') }}"></i>
+        </a>
+    </li>
+    #}
+
+    <!-- SIDEBAR -->
+    <li class="tooltip-show nav-item" title="more actions">
+        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+            <i class="fas fa-ellipsis-h"></i>
+        </a>
+    </li>
+{% elseif status_code is not defined %}
+    <li class="nav-item" style="padding-bottom:8px">
+        <a class="nav-link" href="{{ path('app_register') }}">
+            <button class="btn btn-sm" style="border-radius:20px; background-color:#df3487; color:white;">Free registration</button>
+        </a>
+    </li>
+
+    <li class="nav-item" style="margin-left:-25px;">
+        <a class="nav-link" href="{{ path('app_login') }}">
+            <button class="btn btn-sm" style="border-radius:20px; background-color:#0b88d0; color:white;">Login</button>
+        </a>
+    </li>
+{% endif %}

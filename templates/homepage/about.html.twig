@@ -1,0 +1,75 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+
+    <div class="row" style="text-align: center; font-family:'Barkentina Test Regular'; font-weight: bold;">
+            <div class="card col-12 mt-3">
+                <div class="card-body">
+                    <img style="border-radius: 50%; padding-right:20px; max-width:120px;"
+                         src="{{ asset('build/images/app/yoga-icon.png') }}">
+                    <h1 style="color:#df3487;">Namaste and Welcome to WeAreYogis</h1>
+
+                    <div>
+                        <h2 style="color:#df3487; margin-top:30px;">Motivation</h2>
+
+                        <h4 style="color:#0b88d0; margin-top:30px;" class="col-12 mb-3">
+                            The idea came to life during the corona lock-down in November 2020, <br>
+                            while we were searching for an inspiring online resources to help us raise<br>
+                            above challenging circumstances.<br><br>
+                            This idea gradually evolved into the vision of WeAreYogis social network.
+                        </h4>
+                    </div>
+
+                    <h2 style="color:#df3487; margin-top:30px;">Vision</h2>
+
+                    <h4 style="color:#0b88d0; margin-top:30px;" class="col-12 mb-3">
+                        Our goal is to provide a free online platform for yoga practitioners,<br>
+                        of all yoga styles and schools around the world, to share their knowledge and experience. <br><br>
+                        To connect, inspire, and help each other<br>
+                        on the path towards reaching own highest potential.<br> <br>
+                        As any social network, also we are as successful as our members are engaged.<br>
+                        So, <a href="{{ path('app_register') }}" style="color:#df3487;">join us</a> and
+                        <a href="{{ path('app_contribute') }}" style="color:#df3487;">get engaged</a>.<br><br>
+                        Let´s grow together, because we are Yogis.
+                    </h4>
+
+                    <h2 style="color:#df3487; margin-top:30px;">Team</h2>
+
+                    <div style="margin-top:30px;">
+                        <div class="row">
+                            <div class="col-12 col-sm-3">
+                            </div>
+                            <div class="col-12 col-sm-3 mb-3">
+                                <span style="display: inline-block;">
+                                    <a href='#' class="trigger-empty-modal" data-path="{{ path('app_member_details', {'slug': 'ksenia-krstic' })}}">
+                                        <img style="border-radius: 50%; max-width:120px;" class="tooltip-show" title="more info"
+                                             src="{{ asset('build/images/app/team-ksenia.jpg') }}">
+                                    </a>
+                                    <div>Ksenia</div>
+                                    <div>Community Development</div>
+                                </span>
+                            </div>
+                            <div class="col-12 col-sm-3 mb-3">
+                                <span style="display: inline-block;">
+                                    <a href='#' class="trigger-empty-modal" data-path="{{ path('app_member_details', {'slug': 'dimitri-krstic' })}}">
+                                        <img style="border-radius: 50%; max-width:120px;" class="tooltip-show" title="more info"
+                                             src="{{ asset('build/images/app/team-dimitri.jpg') }}">
+                                    </a>
+                                    <div>Dimitri</div>
+                                    <div>Web Development</div>
+                                </span>
+                            </div>
+                            <div class="col-12 col-sm-3">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+    </div>
+
+{% endblock %}
+
+

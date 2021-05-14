@@ -1,0 +1,103 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+    <div class="row">
+        <div class="card col-12 mt-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+
+                        {% if is_granted('EVENT_AUTHOR', currentEvent) %}
+                            <div class="row">
+                                 <div class="col-12">
+                                    <div class="float-right">
+                                        <a href="{{ path('app_cockpit_event_list') }}"
+                                           class=" btn btn-sm btn-default">
+                                            Back to list
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="row col-12 mb-3 break-long-words">
+                            <h1>{{ currentEvent.title }}</h1>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-5 col-sm-4 col-md-3 col-lg-2">
+                                <a href='#' class="trigger-empty-modal" data-path="{{ path('app_member_details', {'slug': currentEvent.organizer.slug })}}">
+                                    <img style="border-radius: 50%; padding-right:20px; max-width:120px;" class="tooltip-show" title="organizer info"
+                                         src="{{ asset(currentEvent.organizer.profileImagePath) }}">
+                                </a>
+                            </div>
+                            <div class="col-7 col-sm-8 col-md-9 col-lg-10">
+                                <div class="col-12">
+                                    {% if currentEvent.cancelled %}
+                                        <span style="color:red;"><i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;Cancelled</span><br>
+                                    {% endif %}
+                                    {% set topic = ['Asanas & Pranayamas', 'Guided Meditation', 'Kirtan & Mantra Chanting', 'Satsang', 'Diverse'] %}
+                                    <i class="fas fa-info-circle"></i>&nbsp;&nbsp;{{ topic[currentEvent.category-1] }}<br>
+                                    <i class="fa fa-calendar-alt"></i>&nbsp;&nbsp;{{ currentEvent.start|date('F j, Y') }}<br>
+                                    <i class="far fa-clock"></i>&nbsp;&nbsp;{{ currentEvent.start|date('h:i A') }}<br>
+                                    <i class="fas fa-hourglass-half"></i>&nbsp;&nbsp;{{ currentEvent.getFormatedDuration}}<br>
+                                    <i class="fas fa-globe-americas"></i>&nbsp;&nbsp;{{ currentEvent.timezone|timezone_name }}<br>
+                                    <i class="fas fa-users"></i>&nbsp;<span id="eventParticipants">{{ participantsCount }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row col-12 mt-3">
+                            <h2>{% if allowGrading %}Leave a Review{% elseif reviews is not empty %}Received Reviews{% endif %}</h2>
+                        </div>
+
+                        {% if allowGrading %}
+                            {{ form_start(form) }}
+                            <div class="row col-12 form-error text-danger">
+                                {{ form_errors(form.text) }}
+                            </div>
+                            <div class="row col-12 mb-2">
+                                {{ form_widget(form.text) }}
+                            </div>
+                            <div class="row col-12 form-error text-danger">
+                                {{ form_errors(form.grade) }}
+                            </div>
+                            <div class="row col-12 col-sm-6  mb-2">
+                                {{ form_widget(form.grade) }}
+                            </div>
+                            <div class="row col-12 col-sm-6 mb-3" style="padding-bottom:20px;">
+                                <button type="submit" class="btn btn-primary">Submit your review</button>
+                            </div>
+                            {{ form_end(form) }}
+                        {% endif %}
+
+                        {% if reviews is not empty %}
+                            <div class="row">
+                                {% for review in reviews %}
+                                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3">
+                                        {% include '/event/_review_teaser.html.twig' %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if app.user.id == currentEvent.organizer.id %}
+                    <div class="row">
+                        <div class="row col-12 mt-3"><h2>Event Description</h2></div>
+                        {% for paragraph in currentEvent.descriptionInParagraphs %}
+                            <div class="row col-12">
+                                <div class="mb-3 break-long-words" style="font-family: Arial, Helvetica, sans-serif; font-size: 18px;">
+                                    {{ paragraph|striptags|format_links|raw}}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

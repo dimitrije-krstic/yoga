@@ -1,0 +1,18 @@
+{% extends('base.html.twig') %}
+
+ {% block content %}
+     <div class="register-page" style="background-image: url({{ asset('build/images/app/homepage.jpg') }}); background-repeat: no-repeat; background-size: cover;">
+         <div class="homepage-title-box d-none d-lg-block">
+             <div class="homepage-title" style="font-size: 4em;">Social Network for&nbsp;Yogis</div>
+             <h2 class="homepage-subtitle">Share, inspire, and get inspired</h2>
+         </div>
+         <div class="homepage-title-box d-none d-sm-block d-lg-none">
+             <div class="homepage-title" style="font-size: 3em;">Social Network for&nbsp;Yogis</div>
+             <h3 class="homepage-subtitle">Share, inspire, and get inspired</h3>
+         </div>
+         <div class="homepage-title-box d-block d-sm-none" style="margin-top:-130px;">
+             <div class="homepage-title" style="font-size: 2.5em;">Social Network for&nbsp;Yogis</div>
+             <h4 class="homepage-subtitle">Share, inspire, and get inspired</h4>
+         </div>
+     </div>
+ {% endblock %}

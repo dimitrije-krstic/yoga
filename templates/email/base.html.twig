@@ -1,0 +1,31 @@
+{% apply inky_to_html|inline_css(encore_entry_css_source('email'))  %}
+
+    <container>
+        <center>
+                <a href="{{ url('app_homepage') }}">
+                    <img src="{{ absolute_url(asset('build/images/app/yoga_email_icon4.png')) }}" class="logo float-center" alt="WeAreYogis Logo" width="150" align="center">
+                    {#<img src="{{ email.image('@images/email-logo.png') }}" class="logo" alt="WeAreYogis Logo">#}
+                </a>
+        </center>
+        <spacer size="10"></spacer>
+
+        {% block emailbody %}
+        {% endblock %}
+
+        <spacer size="35"></spacer>
+        <row class="footer">
+            <columns>
+                <center>
+                    <div>
+                        WeAreYogis Team&nbsp;&#10084;&#65039;
+                    </div>
+                </center>
+            </columns>
+        </row>
+
+        <row class="bottom">
+        </row>
+
+    </container>
+
+{% endapply %}

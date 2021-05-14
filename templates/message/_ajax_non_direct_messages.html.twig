@@ -1,0 +1,47 @@
+{% if isNotification %}
+    {% set dataPath = 'app_message_notification_form' %}
+    {% set title = 'Notify Followers' %}
+    {% set disclaimer = '' %}
+{% else %}
+    {% set dataPath = 'app_message_forum_form' %}
+    {% set title = 'Create new Forum Topic' %}
+    {% set disclaimer = 'Disclaimer: Once your topic gets more than 4 messages you can no longer delete it,
+        since it will contain valuable contributions also from other members.' %}
+{% endif %}
+
+<div class="row">
+    <div class="card col-12" style="box-shadow:none; margin-bottom:0;">
+        <div class="card-body" style="font-family: Arial, Helvetica, sans-serif; font-size: 18px; padding-top:0px; padding-bottom:0px; padding-right:0px;">
+            <div class="row col-12 mb-3">
+                <div class="col-3 col-sm-2 col-lg-1">
+                    {% if isNotification %}
+                        <i class="far fa-bell fa-2x" style="color:red"></i>
+                    {% else %}
+                        <i class="fas fa-comments fa-2x" style="color:#0b88d0;"></i>
+                    {% endif %}
+                </div>
+                <div class="col-9 col-sm-10 col-lg-11">
+                    <h2>{{ title }}</h2>
+                </div>
+            </div>
+            <div class="row col-12 mb-3" id="notifyMemberForm" data-path="{{ path(dataPath) }}"
+                 data-notify="{% if isNotification %}1{% else %}0{% endif %}"
+            >
+                <div id="notifyMessageError" class="mb-3" style="color:red; font-size: 16px;"></div>
+
+                <input id="subject" type="text" class="form-control" placeholder="Subject">
+
+                <textarea id="message" class="form-control mt-2" placeholder="Your Message..." rows="6" ></textarea>
+
+                <button id="sendNotification" class="btn btn-primary mt-2">Send</button>
+            </div>
+            <div class="row col-12">
+                <small>
+                    {{ disclaimer }}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ encore_entry_script_tags('messages') }}

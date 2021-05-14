@@ -1,0 +1,39 @@
+@import "~foundation-emails/dist/foundation-emails.css";
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f3f3f3;
+    font-family: Helvetica, Arial, sans-serif;
+}
+h1 {
+    background-color: #0B9718;
+    color: #ffffff;
+    padding: 25px 0 25px 0;
+    font-weight: normal;
+}
+hr {
+    border: none;
+    border-top: 3px solid #264459;
+    margin: 20px;
+}
+.welcome {
+    background-color: #0B9718;
+}
+.bottom {
+    background-color: #efefee;
+}
+.logo {
+    width: 150px !important;
+}
+.text-center {
+    text-align: center;
+}
+table.button a {
+    background-color: #0B9718;
+}
+table.button table td {
+    background-color: #0B9718;
+    border: 2px solid #0B9718;
+    border-radius: 5px;
+}

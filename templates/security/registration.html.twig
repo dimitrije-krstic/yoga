@@ -1,0 +1,89 @@
+{% extends('security/base.html.twig') %}
+
+{% block box %}
+  <div class="register-box">
+  <div class="register-logo">
+    <b>WeAreYogis</b> Registration
+  </div>
+
+  <div class="card">
+    <div class="card-body register-card-body">
+
+      <a href="{{ path('app_homepage') }}" class="btn btn-tool btn-sm float-right">
+        <i class="fas fa-times"></i>
+      </a>
+
+      <p class="login-box-msg">Register as a new member</p>
+
+      {{ form_start(form) }}
+
+        <div class="form-error text-danger">{{ form_errors(form.name) }}</div>
+        <div class="input-group mb-3">
+          {{ form_widget(form.name) }}
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-user"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-error text-danger">{{ form_errors(form.email) }}</div>
+        <div class="input-group">
+          {{ form_widget(form.email) }}
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
+        </div>
+      <div class="input-group mb-3"><small>*your email will not be visible to others</small></div>
+
+        <div class="form-error text-danger">{{ form_errors(form.password.first) }}</div>
+        {% for passwordField in form.password %}
+          <div class="input-group mb-3">
+            {{ form_widget(passwordField) }}
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+
+        <div class="row">
+          <div class="form-error text-danger">{{ form_errors(form.captchaCode) }}</div>
+          <div class="col-12">
+            {{ form_widget(form.captchaCode) }}
+          </div>
+        </div>
+
+        <div class="row col-12 mb-3">
+          <small>
+            By continuing with registration, you accept our <a href="{{ path('app_legal_page', {'page': 'terms'}) }}">Terms&nbsp;of&nbsp;Service</a>
+            and you agree with our <a href="{{ path('app_legal_page', {'page': 'privacy'}) }}">Privacy&nbsp;Policy</a>.
+          </small>
+        </div>
+        <div class="clearfix">
+            <button type="submit" class="btn btn-primary float-right mb-3" style="min-width:100px;">Register</button>
+        </div>
+      {{ form_end(form) }}
+
+      {% if feature('social_network_login') %}
+        <div class="social-auth-links text-center">
+          <a href="{{ path('connect_facebook_start') }}" class="btn btn-block btn-primary">
+            <i class="fab fa-facebook mr-2"></i>
+            Register using Facebook
+          </a>
+          <a href="{{ path('connect_google_start') }}" class="btn btn-block btn-danger">
+            <i class="fab fa-google-plus mr-2"></i>
+            Register using Google
+          </a>
+        </div>
+      {% endif %}
+      <br>
+      <a href="{{ path('app_login') }}" class="text-center mt-3">I am already a member</a>
+    </div>
+    <!-- /.form-box -->
+  </div><!-- /.card -->
+</div>
+{% endblock %}

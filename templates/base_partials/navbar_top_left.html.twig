@@ -1,0 +1,39 @@
+{% set postPath = path('app_public_post_list') %}
+{% set membersPath = path('app_member_list') %}
+{% set forumPath = path('app_member_public_forum') %}
+{# set eventPath = path('app_event_list') #}
+{% set contributionPath = path('app_contribute') %}
+
+<li>
+    <a href="{{ postPath }}" class="nav-link" style="padding:5px;">
+        <span class="btn btn-sm {% if currentPath == postPath %}btn-secondary{% else %}btn-default{% endif %}" style="width:60px; border-radius:20px;">Posts</span>
+    </a>
+</li>
+
+
+<li>
+    <a href="{{ forumPath }}" class="nav-link" style="padding:5px;">
+        <span class="btn btn-sm {% if currentPath == forumPath %}btn-secondary{% else %}btn-default{% endif %}" style="width:60px; border-radius:20px;">Forum</span>
+    </a>
+</li>
+{#
+<li>
+    <a href="{{ eventPath }}" class="nav-link" style="padding:5px;">
+        <span class="btn btn-sm {% if currentPath == eventPath %}btn-secondary{% else %}btn-default{% endif %}" style="width:60px; border-radius:20px;">Events</span>
+    </a>
+</li>
+#}
+
+<li>
+    <a href="{{ membersPath }}" class="nav-link" style="padding:5px;">
+        <span class="btn btn-sm {% if currentPath == membersPath %}btn-secondary{% else %}btn-default{% endif %}" style="width:90px; border-radius:20px;">Members</span>
+    </a>
+</li>
+
+<li>
+    <a href="{{ contributionPath }}" class="nav-link" style="padding:5px;">
+        <span class="btn btn-sm {% if currentPath == contributionPath %}btn-secondary{% else %}btn-default{% endif %}" style="width:100px; border-radius:20px;">
+            {% if app.user %}Contribute{% else %}Get Engaged{% endif %}
+        </span>
+    </a>
+</li>

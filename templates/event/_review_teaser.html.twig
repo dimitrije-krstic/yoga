@@ -1,0 +1,21 @@
+<div class="card col-12">
+    <div class="card-body" style="padding: 20px 5px 20px 5px;">
+        <div class="col-12">
+            {% for i in 1..5 %}
+                {% if i <= review.grade %}
+                    <i class="fas fa-star" style="color:#ff6969;"></i>
+                {% else %}
+                    <i class="far fa-star" style="color:#ff6969;"></i>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="col-12">
+            {{ review.createdAt|ago }}
+        </div>
+
+        <div class="col-12 break-long-words" style="padding-top:10px;">
+            {{ review.text|striptags|format_links|raw|nl2br }}
+        </div>
+    </div>
+</div>

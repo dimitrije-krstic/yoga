@@ -1,0 +1,226 @@
+{{ form_start(form) }}
+
+<div class="row">
+    <div class="form-error text-danger col-lg-12">
+        {{ form_errors(form.title) }}
+    </div>
+    <div class="input-group mb-3 col-lg-12 ">
+        {{ form_widget(form.title) }}
+    </div>
+</div>
+
+{% if event is null or event.published is null %}
+    <div class="row">
+        <div class="form-error text-danger col-lg-12">
+            {{ form_errors(form.category) }}
+        </div>
+        <div class="mb-3 col-sm-6">
+            {{ form_widget(form.category) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-error text-danger col-12">
+            {{ form_errors(form.date) }}
+            {{ form_errors(form.time) }}
+            {{ form_errors(form.duration) }}
+            {{ form_errors(form.timezone) }}
+        </div>
+        <div class="col-sm-6 col-md-6">
+            <div class="form-group">
+                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                    {{ form_widget(form.date) }}
+                    <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar-alt"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6">
+            <div class="form-group">
+                <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                    {{ form_widget(form.time) }}
+                    <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6">
+            <div class="form-group">
+                <div class="input-group">
+                    {{ form_widget(form.duration) }}
+                    <div class="input-group-append">
+                        <div class="input-group-text"><i class="fas fa-hourglass-half"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6">
+            <div class="form-group">
+                <div class="input-group">
+                    {{ form_widget(form.timezone) }}
+                    <div class="input-group-append">
+                        <div class="input-group-text"><i class="fas fa-globe-americas"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if app.user.timezone is null %}
+            <div class="col-12 mb-4">
+                <small><i class="fas fa-info-circle" style="color:blue;"></i></small>
+                You can set your default timezone in
+                <a href="{{ path('app_user_account') }}">site preferences</a>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% if not event %}
+    <div class="row">
+        <div class="col-md-3 col-4">
+            <div class="form-group">
+                <div class="input-group">
+                    {{ form_widget(form.repeat) }}
+                    <div class="input-group-append">
+                        <div class="input-group-text"><i class="fas fa-sync-alt"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 col-8" style="margin-top:-5px;">
+            <span>Repeat this event weekly <br> for up to 8 weeks.</span>
+        </div>
+    </div>
+{% endif %}
+
+{% if event and event.published %}
+    <div class="row mb-3">
+        {% set category = constant('App\\Entity\\Event::CATEGORY') %}
+        <div class="input-group-text mb-1" style="margin:5px;"><i class="fas fa-info-circle"></i>&nbsp;{{ category[event.category] }}</div>
+        <div class="input-group-text mb-1" style="margin:5px;"><i class="fa fa-calendar-alt"></i>&nbsp;{{ event.start|date('F j, Y') }}</div>
+        <div class="input-group-text mb-1" style="margin:5px;"><i class="far fa-clock"></i>&nbsp;{{ event.start|date('h:i A') }}</div>
+        <div class="input-group-text mb-1" style="margin:5px;"><i class="fas fa-hourglass-half"></i>&nbsp;{{ event.getFormatedDuration}}</div>
+        <div class="input-group-text mb-1" style="margin:5px;"><i class="fas fa-globe-americas"></i>&nbsp;{{ event.timezone|timezone_name }}</div>
+    </div>
+{% endif %}
+
+<div class="row">
+    <div class="form-error text-danger col-lg-12">
+        {{ form_errors(form.description) }}
+    </div>
+    <div class="input-group mb-3 col-lg-12">
+        {{ form_widget(form.description) }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-error text-danger col-lg-12">
+        {{ form_errors(form.link) }}
+    </div>
+    <div class="input-group mb-3 {% if event is null or event.link is empty %}col-11{% else %}col-12{% endif %}">
+        {{ form_widget(form.link) }}
+    </div>
+    {% if event is null or event.link is empty %}
+        <div class="col-1" style="color:#808080">
+            <i class="fas fa-info-circle tooltip-show"
+               title="You can add link later, all who bookmarked the event will get automatic notification.">
+            </i>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    <div class="form-error text-danger col-lg-12">
+        {{ form_errors(form.linkPassword) }}
+    </div>
+    <div class="input-group mb-3 {% if event is null or event.linkPassword is empty %}col-11{% else %}col-12{% endif %} ">
+        {{ form_widget(form.linkPassword) }}
+    </div>
+    {% if event is null or event.linkPassword is empty %}
+        <div class="col-1" style="color:#808080">
+            <i class="fas fa-info-circle tooltip-show"
+               title="Recommended. So that only verified members can access your event.">
+            </i>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    <div class="mb-3 col-12">
+        {% if event %}
+            Created: {{ event.createdAt|date('F d, Y') }} <br>
+            {% if event.published %}
+                Published: {{ event.published|date('F d, Y') }} <br>
+            {% endif %}
+            {% if event.cancelled %}
+                <div style="color:red;">Cancelled: {{ event.cancelled|date('F d, Y') }}</div>
+            {% endif %}
+            Updated: {{ event.updatedAt|date('F d, Y') }}
+        {% endif %}
+    </div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-lg-12">
+        {% if event is null or event.cancelled is null %}
+            <button type="submit" class="btn btn-primary">{{ buttonText }}</button>
+        {% endif %}
+
+        {% if event %}
+            {% if event.published is null %}
+                <a href="#" class="btn btn-success" data-toggle="modal" data-target="{{'#eventPublish-' ~ event.id }}">
+                    Publish
+                </a>
+
+                {% include 'base_partials/_modal.html.twig' with {
+                    'dataTargetId': 'eventPublish-'~ event.id,
+                    'modalSize': 'modal-md',
+                    'backgroundColor': 'bg-success',
+                    'title': 'Publish this Event',
+                    'bodyText': {
+                        1: 'After publishing this event you can still edit:',
+                        2: 'title and event description.'
+                    },
+                    'confirmationPath': path('app_cockpit_event_publish', { 'id': event.id }),
+                    'confirmationButtonText': 'Publish'
+                } %}
+
+                <a href="#" class="btn btn-danger float-right">
+                    <i class="fas fa-trash-alt" data-toggle="modal" data-target="{{'#eventDelete-' ~ event.id }}"></i>
+                </a>
+                {% include 'base_partials/_modal.html.twig' with {
+                    'dataTargetId': 'eventDelete-' ~ event.id,
+                    'modalSize': 'modal-md',
+                    'backgroundColor': 'bg-danger',
+                    'title': 'Delete this Event',
+                    'bodyText': {
+                        1: 'Are you sure you want to delete this event?'
+                    },
+                    'confirmationPath': path('app_cockpit_event_delete', { 'id': event.id }) ,
+                    'confirmationButtonText': 'Delete'
+                } %}
+
+            {% elseif event.cancelled is null %}
+                <a href="#" class="btn btn-danger float-right tooltip-show" title="cancel">
+                    <i class="fas fa-times" data-toggle="modal" data-target="{{'#eventCancel-' ~ event.id }}"></i>
+                </a>
+                {% include 'base_partials/_modal.html.twig' with {
+                    'dataTargetId': 'eventCancel-' ~ event.id,
+                    'modalSize': 'modal-md',
+                    'backgroundColor': 'bg-danger',
+                    'title': 'Cancel this Event',
+                    'bodyText': {
+                        1: 'Are you sure you want to cancel this event?',
+                        2: 'Registered participants will be informed.'
+                    },
+                    'confirmationPath': path('app_cockpit_event_cancel', { 'id': event.id }) ,
+                    'confirmationButtonText': 'Cancel Event'
+                } %}
+            {% endif %}
+
+        {% endif %}
+    </div>
+</div>
+
+{{ form_end(form) }}

@@ -1,0 +1,11 @@
+parameters:
+    level: 5
+    inferPrivatePropertyTypeFromConstructor: true
+    symfony:
+        container_xml_path: var/cache/dev/App_KernelDevDebugContainer.xml
+        console_application_loader: tests/console-loader.php
+    doctrine:
+        objectManagerLoader: tests/doctrine-orm-bootstrap.php
+    excludes_analyse:
+        - %currentWorkingDirectory%/src/Migrations
+    ignoreErrors:

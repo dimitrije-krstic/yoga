@@ -1,0 +1,87 @@
+{% extends('security/base.html.twig') %}
+
+{% block box %}
+    <div class="login-box">
+    <div class="login-logo">
+        <b>WeAreYogis</b> Login
+    </div>
+    <!-- /.login-logo-->
+    <div class="card">
+        <div class="card-body login-card-body">
+
+            <a href="{{ path('app_homepage') }}" class="btn btn-tool btn-sm float-right">
+                <i class="fas fa-times"></i>
+            </a>
+
+            <p class="login-box-msg">Log in to start new session</p>
+
+            {% if error %}
+                <p class="login-box-msg text-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+            {% endif %}
+
+            <form method="post">
+                <div class="input-group mb-3">
+                    <input type="email" name="email" class="form-control" placeholder="Email" value="{{ lastUsername }}">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" name="password" class="form-control" placeholder="Password">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="icheck-primary">
+                            <input type="checkbox" name="_remember_me" id="remember" checked>
+                            <label for="remember">
+                                Remember Me
+                            </label>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            </form>
+
+            {% if feature('social_network_login') %}
+                <div class="social-auth-links text-center mb-3">
+                    <p>- OR -</p>
+                    <a href="{{ path('connect_facebook_start') }}" class="btn btn-block btn-primary">
+                        <i class="fab fa-facebook mr-2"></i> Log in using Facebook
+                    </a>
+                    <a href="{{ path('connect_google_start') }}" class="btn btn-block btn-danger">
+                        <i class="fab fa-google-plus mr-2"></i> Log in using Google
+                    </a>
+                </div>
+            {% endif %}
+            <!-- /.social-auth-links -->
+            <div class="row mt-3 mb-3 text-center">
+                <small>
+                    By continuing with login, you accept our <a href="{{ path('app_legal_page', {'page': 'terms'}) }}">Terms&nbsp;of&nbsp;Service</a>
+                    and you agree with our <a href="{{ path('app_legal_page', {'page': 'privacy'}) }}">Privacy&nbsp;Policy</a>.
+                </small>
+            </div>
+            <br>
+            <p class="mb-1">
+                <a href="{{ path('app_password_reset_request') }}">I forgot my password</a>
+            </p>
+            <p class="mb-0">
+                <a href="{{ path('app_register') }}" class="text-center">Register as a new member</a>
+            </p>
+
+        </div>
+        <!-- /.login-card-body -->
+    </div>
+</div>
+{% endblock %}

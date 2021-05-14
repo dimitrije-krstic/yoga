@@ -1,0 +1,50 @@
+<div class="card">
+    <a href="{{ path('app_post_view_page', {'slug': post.slug}) }}" style="color: inherit;">
+        <div style="position: relative; display: block;">
+                <img style="width: 100%; border-top-left-radius:5px; border-top-right-radius:5px"
+                    {% if post.images is not empty %}
+                        src="{{ asset(post.smallImagePath(post.images[0])) }}"
+                    {% elseif  post.youtubeVideoId is not empty%}
+                        src="https://i.ytimg.com/vi/{{ post.youtubeVideoId }}/hqdefault.jpg"
+                    {% else %}
+                        src="{{ asset('build/images/app/default-post-image.jpg')}}"
+                    {% endif %}
+                >
+                {% if post.youtubeVideoId is not empty %}
+                    <img src="{{ asset('build/images/app/youtube-icon.png') }}"
+                       style="position: absolute; width: 50px; right:7px; bottom:0px;"/>
+                {% endif %}
+        </div>
+
+        <div class="col-12 md-3 mt-3" style="font-family: Arial, Helvetica, sans-serif; font-size: 18px; text-align: center;">
+            {{ post.title }}
+        </div>
+
+        {% if myPosts is not defined %}
+            <div class="col-12 md-3" style="text-align: center; color:#68717a; min-height: 25px">
+                {{ dataWrapper.postAuthorName(post) }}
+            </div>
+        {% endif %}
+
+        {%  if post.publishedAt %}
+            <div class="col-12 md-3" style="text-align: center; padding-bottom:10px; color:#68717a">
+                {% if post.markedAsInappropriateAt is not null %}
+                    <i class="tooltip-show fas fa-exclamation-triangle" title="marked inappropriate" style="color:#ff9c9c"></i>
+                {% else %}
+                    <i class="fas fa-heart" style="color:#ff9c9c"></i>
+                    {{ dataWrapper.likedByCount(post) }}
+                {% endif %}
+                <i class="far fa-comment" style="padding-left:10px;"></i>
+                {{ dataWrapper.commentCount(post) }}
+                <i class="far fa-calendar-alt" style="padding-left:10px;"></i>
+                {{ post.publishedAt|ago }}
+            </div>
+        {% endif %}
+    </a>
+    {%  if myPosts is defined %}
+    <div class="col-12 md-3" style="padding-bottom:10px;">
+        {% include 'post/cockpit/_list_actions.html.twig' %}
+    </div>
+    {% endif %}
+
+</div>

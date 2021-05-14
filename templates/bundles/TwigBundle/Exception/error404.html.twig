@@ -1,0 +1,23 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+
+    <div class="row" style="text-align: center;">
+            <div class="card col-12 mt-3">
+                <div class="card-body">
+                    <h1 style="font-family:'Barkentina Test Regular'; font-weight: bold;">Oops, Page Not Found</h1>
+
+                    <h4 style="padding-top:30px;">
+                        The requested page couldn't be located. <br>
+                    </h4>
+
+                    <div style="padding-top:30px;">
+                        <a href="{{ path('app_homepage') }}"><button class="btn btn-primary">Return to the homepage</button></a>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+{% endblock %}
+
+

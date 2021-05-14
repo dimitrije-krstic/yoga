@@ -1,0 +1,56 @@
+<div class="card" style="box-shadow:none; margin-bottom:0;">
+    <div class="card-body" style="font-family: Arial, Helvetica, sans-serif; font-size: 18px; padding-top:0px; padding-bottom:0px;">
+
+        {% if threads is empty %}
+            <div class="12">
+                Currently there are no notifications from this member.
+            </div>
+        {% endif %}
+
+        {% for thread in threads %}
+            <div class="col-12 mb-3" style="padding:10px 5px 10px 5px; border-radius:20px; background-color:#ececec" id="thread-{{ thread.id }}">
+
+                {% if app.user.slug == thread.memberSlug %}
+                    <div class="col-12">
+                        <button type="button" class="btn btn-tool float-right deleteNotification"
+                                data-url="{{ path('app_delete_notification', {'id' : thread.id}) }}"
+                                data-id="{{ thread.id }}"
+                        >
+                            <i class="fas fa-trash-alt" style="color:#ff9c9c;"></i>
+                        </button>
+                    </div>
+                {% endif %}
+
+                <div class="col-12 row">
+                    <span style="padding-right:10px; padding-left:5px; max-width:50px;">
+                        <img style="border-radius: 50%;" src="{{ asset(thread.memberImage()) }}" width="40" />
+                    </span>
+                    <span>
+                        <div class="col-12">
+                            <b>{{ thread.subject|capitalize }}</b>
+                        </div>
+                        <div class="col-12">
+                            <small style="white-space: nowrap;">
+                                {{ thread.updatedAt|ago}}
+                            </small>
+                        </div>
+                    </span>
+
+                    {% if not thread.read %}
+                        <i class="fas fa-bell float-right" style="padding-right:5px; color:red; position: absolute; right:5px; top:5px;"></i>
+                    {% endif %}
+                </div>
+                <hr style="margin:5px 0px 5px 0px; padding:0px;">
+                {% for message in thread.extractedMessages %}
+                    <div class="col-12 mt-1" style="margin-top:0px !important;">
+                        {{ message|striptags|format_links|raw|nl2br }}
+                    </div>
+                {% endfor %}
+
+            </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+{{ encore_entry_script_tags('messages') }}

@@ -1,0 +1,81 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+    <div class="row">
+        <div class="card col-12 mt-3">
+            <div class="card-body mb-3">
+                <h2>Blocked Users</h2>
+                <div class="input-group mb-3 col-lg-9 ">
+                    <a href="{{ path('app_admin_get_users') }}"><i class="fas fa-backward"></i> back to the user list</a>
+                </div>
+            </div>
+
+            {% if is_granted('ROLE_MASTER') %}
+                <form method="post">
+                    <div class="row cl-12">
+                        <div class="input-group  mb-3 col-md-5 col-lg-5">
+                            <input type="email" name="email" class="form-control" placeholder="Block User by Email" required>
+                        </div>
+                        <div class="input-group  mb-3 col-md-7 col-lg-7">
+                            <input type="text" name="reason" class="form-control" placeholder="Reason" required>
+                            <button type="submit" class="btn btn-danger btn-sm">Block</button>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                </form>
+            {% endif %}
+
+            <table class="table table-striped table-valign-middle text-center">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Created</th>
+                    <th>Blocked</th>
+                    <th>Blocked by</th>
+                    <th>Reason</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for user in paginatedUsers %}
+                    <tr>
+                        <td>
+                            {{ user.name }}
+                        </td>
+                        <td>
+                            {{ user.email }}
+                        </td>
+                        <td>
+                            {{ user.createdAt|date("d.m.Y") }}
+                        </td>
+                        <td>
+                            {{ user.blockedAt|date("d.m.Y") }}
+                        </td>
+                        <td>
+                            {{ user.blockedBy }}
+                        </td>
+                        <td>
+                            {{ user.reason }}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            No users on blocklist
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="mt-4">
+                {{ knp_pagination_render(paginatedUsers) }}
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+

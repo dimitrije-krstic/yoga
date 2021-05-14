@@ -1,0 +1,77 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+
+    <div class="row mb-3">
+        <div class="col-12 col-sm-8 col-md-6">
+            {% include 'base_partials/_simple_search.html.twig' with {'name': 'query', 'placeholder': 'Search'} %}
+        </div>
+        {% if app.user %}
+            <div class="mt-3 col-12 col-sm-4 col-md-3 col-lg-2">
+                <span style="padding-right:15px; padding-left:10px;">
+                    {% if currentRoute == 'app_member_following' %}
+                        <img src="{{ asset('build/images/app/following-select.png') }}" height="37px" />
+                    {% else %}
+                        <a  href="{{ path('app_member_following') }}" >
+                            <img class="tooltip-show" src="{{ asset('build/images/app/following.png') }}" height="37px" title="following" />
+                        </a>
+                    {% endif %}
+                </span>
+                <span>
+                    {% if currentRoute == 'app_member_followers' %}
+                        <img src="{{ asset('build/images/app/followers-select.png') }}" height="35px" />
+                    {% else %}
+                        <a href="{{ path('app_member_followers') }}" >
+                            <img class="tooltip-show" src="{{ asset('build/images/app/followers.png') }}" height="35px" title="followers" />
+                        </a>
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
+
+    </div>
+
+    <div class="row">
+        {% for member in members %}
+            <div class="mb-3 mt-3 col-lg-2 col-md-3 col-6" style="position: relative; display: block;">
+                <a href='#' class="trigger-empty-modal" style="color:inherit"
+                   data-path="{{ path('app_member_details', {'slug': member.slug })}}"
+                >
+                    <img class="tooltip-show" title="member info" style="width: 100%; border-radius: 50%; padding-right:20px;"
+                         src="{{ asset(member.image) }}"
+                    >
+                </a>
+                {% if app.user and member.patron %}
+                    <img class="tooltip-show" title="patron" style="width:60px; position: absolute; left:0px; top:-10px;" src="{{ asset('build/images/app/patron-icon.png') }}"/>
+                {% endif %}
+
+                {% if tracking is defined %}
+                    <div class="col-12 md-3 mt-1 text-center">
+                        <a href="#" class="trigger-empty-md-modal"
+                           data-path="{{ path('app_member_notifications', { 'slug': member.slug }) }}"
+                        >
+                            <span class="tooltip-show btn btn-default btn-lg break-long-words" title="check notifications" style="border-radius:20px;">
+                                {% if tracking and member.hasUpdates%}
+                                    <i class="far fa-bell" style="color:red;"></i>
+                                {% else %}
+                                    <i class="fas fa-info-circle" style="color:#45b3e7;"></i>
+                                {% endif %}
+                                {{ member.name|split(' ')[0] }}
+                            </span>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="col-12 md-3 mt-1 text-center break-long-words">
+                        <h5>{{ member.name|split(' ')[0] }}</h5>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+<div class="row mt-3">
+    <div class="col-12">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+</div>
+{% endblock %}

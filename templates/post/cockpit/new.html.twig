@@ -1,0 +1,32 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+<div class="row col-12">
+    <div class="card col-12 mt-3">
+        <div class="card-header">
+            <h2>{% if isVideoPost %}Create new Post with YouTube video{% else %}Create New Post{% endif %}</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="input-group mb-3 col-lg-9 ">
+                    <a href="{{ path('app_user_post_list') }}"><i class="fas fa-backward"></i> back to the list</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-9 col-md-8 mb-4">
+                    {{ include('post/cockpit/_form.html.twig', {
+                        buttonText: 'Create'
+                    }) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.tiny.cloud/1/4zbiepraxobtryh7faeyxg2vbdtlv4ifaer5oh82w4ge47fq/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    {{ encore_entry_script_tags('edit-post') }}
+{% endblock %}

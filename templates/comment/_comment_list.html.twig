@@ -1,0 +1,20 @@
+{%  for comment in commentDataWrapper %}
+    <div class="row mb-3">
+        <div class="col-12 col-sm-1">
+            <a href='#' class="trigger-empty-modal tooltip-show" title="member info"
+               data-path="{{ path('app_member_details', {'slug': comment.authorSlug })}}">
+                <img style="border-radius: 50%; max-width:40px;"
+                     src="{{ asset(comment.authorProfileImage) }}"
+                >
+            </a>
+        </div>
+        <div class="col-12 col-sm-11" >
+            <div class="col-12">
+                <b>{{ comment.authorName }}</b>, <small>{{ comment.createdAt|ago }}</small>
+            </div>
+            <div class="col-12 mb-3">
+                {{ comment.content|striptags|format_links|raw|nl2br }}
+            </div>
+        </div>
+    </div>
+{% endfor %}

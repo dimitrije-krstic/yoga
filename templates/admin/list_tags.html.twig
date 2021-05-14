@@ -1,0 +1,73 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+    <div class="row">
+        <div class="card col-12 mt-3">
+
+            <div class="card-header border-0">
+                <div class="row mb-3">
+                    <h2>List Tags</h2>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 mb-3">
+                        Total: {{ paginatedTags.getTotalItemCount }} Tags
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        {% include 'base_partials/_simple_search.html.twig' with {'name': 'query'} %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                {% for tag in paginatedTags %}
+                <div class="col-md-6">
+                    <div class="row col-11 mb-3">
+                        <div class="col-1">
+                            <a href="#">
+                                <i class="fas fa-trash-alt" style="color:red" data-toggle="modal" data-target="{{'#tagDelete-' ~ tag.id }}"></i>
+                            </a>
+                            {% include 'base_partials/_modal.html.twig' with {
+                                'dataTargetId': 'tagDelete-' ~ tag.id,
+                                'modalSize': 'modal-md',
+                                'backgroundColor': 'bg-danger',
+                                'title': 'Delete this Post Tag',
+                                'bodyText': {
+                                    1: tag.slug
+                                },
+                                'confirmationPath': path('app_admin_tag_delete', {'id': tag.id}),
+                                'confirmationButtonText': 'Delete'
+                            } %}
+                        </div>
+
+                        <div class="col-3">
+                            <a href="{{ path('app_public_post_list', {'query': tag.slug}) }}">{{ tag.slug }}</a>
+                        </div>
+
+                        <div class="input-group col-8">
+                            <input id="{{ 'changeTag'~tag.id }}" type="text" class="form-control input-sm" placeholder="Rename to...">
+                            <div class="input-group-apend">
+                                <div class="input-group-text">
+                                    <a href="#" class="changeTagName" data-path="{{ path('app_admin_tag_edit') }}" data-id="{{ tag.id }}">
+                                        <i class="fas fa-chevron-circle-right" style="color:green;"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-4">
+                {{ knp_pagination_render(paginatedTags) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('admin') }}
+{% endblock %}
+
+

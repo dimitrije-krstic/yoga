@@ -1,0 +1,34 @@
+{% if post.youtubeVideoId is not null %}
+    {% set editPath = 'app_user_edit_video_post' %}
+{% else %}
+    {% set editPath = 'app_user_edit_post' %}
+{% endif %}
+
+{% if post.publishedAt is null  %}
+    <div class="mb-2 mt-2">
+        <a href="#" class="btn btn-success btn-block" data-toggle="modal" data-target="{{'#postPublish-' ~ post.id }}">
+            Publish
+        </a>
+        {% include 'base_partials/_modal.html.twig' with {
+            'dataTargetId': 'postPublish-'~ post.id,
+            'modalSize': 'modal-md',
+            'backgroundColor': 'bg-success',
+            'title': 'Publish Your Post',
+            'bodyText': {
+                1: 'TITLE: '~ post.title
+            },
+            'confirmationPath': path('app_user_publish_post', app.request.query.all|merge({ 'id': post.id })),
+            'confirmationButtonText': 'Publish'
+        } %}
+    </div>
+{% endif %}
+
+<div>
+    <a class="btn btn-block {% if post.publishedAt is null  %}btn-primary{% else %}btn-default{% endif %}"
+       href="{{ path(editPath, app.request.query.all|merge({ 'id': post.id})) }}">
+        Edit
+    </a>
+</div>
+
+
+

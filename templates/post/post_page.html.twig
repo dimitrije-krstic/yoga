@@ -1,0 +1,250 @@
+{% extends('base.html.twig') %}
+
+{% block stylesheets %}
+     {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('plugins/slick/slick.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('plugins/slick/slick-theme.css') }}"/>
+    {{ encore_entry_link_tags('youtube') }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="card col-12 mt-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-9 col-md-8 mb-4">
+                        <div class="col-md-12">
+                            {% if app.user is not null and is_granted('POST_AUTHOR', post) %}
+                                <div class="row">
+                                    {% if post.publishedAt is null %}
+                                        <div class="mb-3 col-12"  style="background-color:#cccccc; text-align: center;">
+                                            <b>PREVIEW:</b>&nbsp;This post is not published yet.
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-12">
+                                        <div class="float-right">
+                                            <a href="{{ path('app_user_edit_post', { 'id': post.id}) }}"
+                                               class=" btn btn-sm btn-default">
+                                                Edit Your Post
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="row mb-3">
+                                <h1 class="break-long-words">{{ post.title }}</h1>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-5 col-sm-4 col-md-3 col-lg-2">
+                                    {% if post.webPost == false and (is_granted('ROLE_USER') or post.author.accountPubliclyVisible) %}
+                                        <a href='#' class="trigger-empty-modal" data-path="{{ path('app_member_details', {'slug': post.author.slug })}}">
+                                            <img style="border-radius: 50%; padding-right:20px; max-width:120px;" class="tooltip-show" title="author info"
+                                                 src="{{ asset(post.author.profileImagePath) }}">
+
+                                        </a>
+                                        <img class="d-none d-sm-block" src="{{ asset('build/images/app/click-me.svg') }}" width="30" style="position: absolute; left:0px; bottom:-4px; transform: scaleX(-1);"/>
+                                        <img class="d-block d-sm-none" src="{{ asset('build/images/app/click-me.svg') }}" width="30" style="position: absolute; left:0px; bottom:10px; transform: scaleX(-1);"/>
+                                    {% else %}
+                                        <img  style="border-radius: 50%; padding-right:20px; max-width:120px;"
+                                              src="{{ asset('build/images/app/default-avatar.jpg') }}" >
+                                    {% endif %}
+                                </div>
+                                <div class="col-7 col-sm-8 col-md-9 col-lg-10">
+                                    <div class="col-12">
+                                        {% if post.webPost == false and (app.user or post.author.accountPubliclyVisible) %}
+                                            <h4 class="break-long-words d-none d-sm-block">{{ post.author.name }}</h4>
+                                            <h4 class="break-long-words d-block d-sm-none">{{ post.author.name|split(' ')[0] }}</h4>
+                                        {% elseif post.webPost %}
+                                            <h4 class="break-long-words d-none d-sm-block">{{ post.webPostAuthorName }}</h4>
+                                            <h4 class="break-long-words d-block d-sm-none">{{ post.webPostAuthorName|split(' ')[0] }}</h4>
+                                            {% if post.webPostAuthorLink %}
+                                                <div class="break-long-words mb-2">
+                                                    <a href="{{ post.webPostAuthorLink }}" rel="external nofollow noopener" target="_blank"><i class="fas fa-home"></i> {{ post.webPostAuthorLink }}</a>
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <a href="{{ path('app_register') }}" style="color:#68717a;">
+                                                Register to see author details
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                    {% if post.publishedAt is not null %}
+                                        <div class="col-12">
+                                            <span style="padding-right:10px;">
+                                                <i class="far fa-calendar-alt"></i> {{ post.publishedAt|ago }}
+                                            </span>
+                                            <span>
+                                                <i class="far fa-comment mb-2"></i>
+                                                {{ commentsNo }}
+                                            </span>
+                                            {% if app.user and app.user.verified and isFlaggedByUser == false and not is_granted('POST_AUTHOR', post) %}
+                                                <span class="dropdown">
+                                                    <a data-toggle="dropdown" href="#" style="padding-left:10px;">
+                                                      <i class="fas fa-ellipsis-h" style="color:#808080;"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                      <a href="#" class="dropdown-item" data-toggle="modal" data-target="#flagInappropriateContent">
+                                                        <i class="fas fa-flag"></i> Report
+                                                      </a>
+                                                    </div>
+                                                </span>
+                                                {% if flagForm is not null and isFlaggedByUser == false  %}
+                                                    {% include 'base_partials/_modal_flag_content.html.twig' with {'flagFormTitle': 'Report this Post as Inappropriate'} %}
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-12 mt-2">
+                                            {% if is_granted('ROLE_USER') and not is_granted('POST_AUTHOR', post) %}
+                                                <span>
+                                                    <a href="#" class="favoritePost tooltip-show" title="favorite"
+                                                       data-path="{{ path('app_post_favorites', {'id': post.id }) }}">
+                                                        <i id="favoritePost" class="{% if isPostFavoriteByUser %}fas{% else %}far{% endif %} fa-star fa-lg"
+                                                           style="color:#800080; padding-right:15px;"></i>
+                                                    </a>
+                                                </span>
+                                            {% endif %}
+                                            {% if post.markedAsInappropriateAt is not null %}
+                                                <span>
+                                                    <i class="tooltip-show fas fa-exclamation-triangle fa-lg" style="color:red;" title="marked inappropriate"></i>
+                                                </span>
+                                            {% else %}
+                                                <span id="likePostSpan">
+                                                    {% if isPostLikedByUser or not is_granted('ROLE_USER') or is_granted('POST_AUTHOR', post) %}
+                                                        <i class="fas fa-heart fa-lg" style="color:red;"></i>
+                                                    {% else %}
+                                                        <a href="#" class="likePost" data-path="{{ path('app_post_like', {'id': post.id }) }}">
+                                                            <i class="liked tooltip-show fas fa-heart fa-lg" style="color:red;" title="like"></i>
+                                                            <i class="not-liked-yet far fa-heart fa-lg" style="color:red"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                    {{ post.likedBy|length }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% if post.tags is not empty %}
+                                <div class="row mb-3">
+                                        {% for tag in post.tags %}
+                                            <a href="{{ path('app_public_post_list', {'query': tag.slug}) }}" style="color: inherit;">
+                                                    <div style="
+                                                   background: #f2f2f2;
+                                                   border: 1px solid #7a7a7a;
+                                                   border-radius: 5px;
+                                                   padding-left: 10px;
+                                                   padding-right: 10px;
+                                                   margin: 5px;
+                                                " class="tooltip-show" title="search by tag">
+                                                    {{ tag.slug }}
+                                                </div>
+                                            </a>
+                                        {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            {% if post.youtubeVideoId %}
+                                <div class="row col-12 mb-3 tooltip-show" {% if not hasCookieConsent %}title="To watch YouTube videos please accept usage of cookies and refresh page"{% endif %}>
+                                    <div class="youtube-player col-12" data-id="{{ post.youtubeVideoId }}" data-cookie="{% if hasCookieConsent %}1{% else %}0{% endif %}"></div>
+                                </div>
+                            {% endif %}
+
+                            <div class="row">
+                                <div class="mb-3 break-long-words postContentWrapper">
+                                    {{ post.content|striptags('<p><ul><li><em><strong><img>')|format_links|raw }}
+                                </div>
+                            </div>
+
+                            {#TODO implement carousel for images#}
+                            {% if carouselImages is defined and carouselImages is not empty %}
+                                <div style="margin: auto; padding: 20px; width: 100%;">
+                                    <div class="postImagesCarousel">
+                                        {% for image in carouselImages %}
+                                            <div>
+                                                <img style="max-width: 100%;
+                                                            display: block;
+                                                            border-radius: 25px;"
+                                                     data-lazy="{{ asset(post.imagePath(image)) }}"
+                                                >
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if app.user %}
+                                {% if post.publishedAt is not null %}
+                                    {% if app.user.verified %}
+                                        {{ form_start(form) }}
+                                            <div class="row form-error text-danger ">
+                                                {{ form_errors(form.content) }}
+                                            </div>
+                                            <div class="row mb-1 mt-3">
+                                                {{ form_widget(form.content) }}
+                                            </div>
+                                            <div class="row mb-3">
+                                                <button type="submit" class="btn btn-primary btn-sm">Add Comment</button>
+                                            </div>
+                                        {{ form_end(form) }}
+                                    {% else %}
+                                        <div class="row">
+                                            <a href="{{ path('app_user_account') }}" style="color:#68717a;">
+                                                To comment, please verify your email.
+                                            </a>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if commentsNo %}
+                                        <div class="row mt-3">
+                                            <h2>Comments</h2>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% include 'comment/_comment_list.html.twig' %}
+
+                            {% else %}
+                                <div class="row">
+                                    <a href="{{ path('app_register') }}" style="color:#68717a;">
+                                        Register to comment and see other comments
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 mb-4">
+                        {% if dataWrapper.posts is not empty %}
+                            <div class="row mt-3">
+                                {% for post in dataWrapper.posts %}
+                                    <div class="col-md-11 col-sm-6 col-12">
+                                        {% include 'post/_post_teaser.html.twig' %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if post.webPost == false and (is_granted('ROLE_USER') or post.author.accountPubliclyVisible) %}
+                                <div class="col-12" style="text-align: center;">
+                                    <h5><a href="{{ path('app_post_member_page', {'slug': post.author.slug }) }}">
+                                            See all posts from {{ post.author.name| split(' ')[0] }}...
+                                        </a>
+                                    </h5>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('plugins/slick/slick.min.js') }}"></script>
+    {{ encore_entry_script_tags('post') }}
+{% endblock %}
+
+

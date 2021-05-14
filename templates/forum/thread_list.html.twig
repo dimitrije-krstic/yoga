@@ -1,0 +1,75 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+    <div class="col-12">
+        <div class="row" style="font-family: Arial, Helvetica, sans-serif; font-size: 17px;">
+            <div class="col-12 col-md-12 col-lg-9 col-xl-6">
+                <div class="col-12" style="padding-left:0px; margin-left:0px">
+                    {% include 'base_partials/_simple_search.html.twig' with {'name': 'query', 'placeholder': 'Search by subject...'} %}
+                </div>
+
+                {% for thread in threads %}
+                    {% if selectedThread and thread.id == selectedThread.id %}
+                        {% set style = 'padding:10px 0px 10px 5px; border-radius:20px; background-color:#ffe0da;'%}
+                    {% else %}
+                        {% set style = 'padding:10px 0px 10px 5px; border-radius:20px;' %}
+                    {% endif %}
+
+                    <a id="{{ thread.id }}"></a>
+
+                    <a href="{{ path(currentRoute, routeParams|merge({'thread': thread.id, 'page': pagination.page, 'query': query, '_fragment': thread.id})) }}" style="color: inherit;">
+                        <div class="card col-12 mb-3" style="{{ style }}">
+                            <div class="row">
+                                <div class="col-2 col-sm-1" style="margin-top:5px;">
+                                    <img style="border-radius: 50%; max-width:40px;"
+                                         src="{{ asset(thread.memberImage()) }}"
+                                    >
+                                </div>
+                                <div class="col-10 col-sm-11" style="margin-top:5px;">
+                                    <div class="col-12">
+                                        {{ thread.subject|capitalize }}
+                                    </div>
+                                    <div class="col-12">
+                                        <small style="white-space: nowrap;">
+                                            {{ thread.memberName|split(' ')[0]}},
+                                            {{ thread.updatedAt|ago}},
+                                            &nbsp;<i class="far fa-comment"></i>
+                                            {{ thread.messageCount}}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    {% if selectedThread and thread.id == selectedThread.id %}
+                        <div class="threadMessages mt-3 col-12"></div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="col-12 col-md-12 col-lg-9 col-xl-6 mt-3">
+                {% if selectedThread %}
+                    <div class="threadMessagesMain" style="position:sticky; top: 0; width: 100%;">
+                        {% include 'message/_thread.html.twig' %}
+                    </div>
+                    {% if flagForm is defined and flagForm is not null %}
+                        {% include 'base_partials/_modal_flag_content.html.twig' with {'flagFormTitle': 'Report this Thread as Inappropriate'} %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {{  knp_pagination_render(pagination) }}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+    {{ encore_entry_script_tags('messages') }}
+{% endblock %}

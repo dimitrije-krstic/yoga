@@ -1,0 +1,88 @@
+<div class="card direct-chat direct-chat-info">
+
+    <div class="card-tools" style="height:20px; border-bottom: 1px solid rgba(0,0,0,.125); margin:0px; padding-top:8px;">
+        {% if flagForm is defined and flagForm is not null %}
+            <button class="dropdown btn btn-tool float-left">
+                <a data-toggle="dropdown" href="#" style="padding-left:10px;">
+                  <i class="fas fa-ellipsis-h" style="color:#adb5bd;"></i>
+                </a>
+                <div class="dropdown-menu">
+                  <a href="#" class="dropdown-item" data-toggle="modal" data-target="#flagInappropriateContent">
+                    <i class="fas fa-flag"></i> Report
+                  </a>
+                </div>
+            </button>
+        {% endif %}
+
+        <button type="button" class="btn btn-tool float-right" data-card-widget="remove">
+            <i class="fas fa-times"></i>
+        </button>
+        <button type="button" class="btn btn-tool float-right" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+        </button>
+    </div>
+
+    <div class="card-body">
+        {% set inverseMessages = currentRoute != 'app_member_public_forum' %}
+        <div class="direct-chat-messages"
+             style="{% if inverseMessages %}display: flex; flex-direction: column-reverse;{% endif %}
+             height:auto; max-height:600px; font-size: 16px;"
+        >
+            {%  for message in selectedThreadMessages %}
+                {% include 'message/_message.html.twig' %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card-footer">
+        {% if app.user is not null and app.user.verified %}
+            <div id="threadReplyMessageError" class="mb-3" style="color:red; font-size: 16px;">
+            </div>
+            <div class="input-group">
+                <textarea id="threadReplyMessage" data-path="{{ path('app_message_reply', {'id': selectedThread.id}) }}"
+                          placeholder="Your message ..." class="form-control" cols="1" style="margin-right:5px; border-radius:5px;"></textarea>
+                <div>
+                    <button id="threadReplyMessageButton" class="btn btn-sm btn-info" style="display: none;">
+                        Send
+                    </button>
+                    <div id="threadReplyMessageButtonSpinner" class="spinner-grow text-info" style="display: inline-block;"></div>
+                    <br>
+                    {% if imageUploadForm %}
+                        {{ form_start(imageUploadForm) }}
+                            <div id="imageUploadButton" style="display: inline-block;">
+                                <label class="btn" style="padding:0px;" >
+                                    <img class="tooltip-show" title="insert image" src="{{ asset('build/images/app/insert-image.png') }}" style="width: 30px; margin-top: 10px;">
+                                    {{ form_widget(imageUploadForm.imageFile) }}
+                                </label>
+                            </div>
+                            <div id="imageUploadButtonSpinner" class="spinner-grow text-primary" style="display: none"></div>
+                            <button id="submit-image-upload" type="submit" hidden></button>
+                        {{ form_end(imageUploadForm) }}
+                    {% endif %}
+                </div>
+            </div>
+            {% if activeTab is defined %}
+                <div class="clearfix mt-2">
+                    {% if activeTab == 'inbox' or activeTab == 'spam' %}
+                        <input type="checkbox" id="spamMessageThread" data-path="{{ path('app_message_thread_spam', {'id': selectedThread.id}) }}" {% if selectedThread.spam %}checked{% endif %}>
+                        Mark as spam
+                    {% endif %}
+
+                    {% if activeTab == 'sent' or activeTab == 'notifications' or (activeTab == 'forum' and selectedThreadMessages|length < 5) %}
+                        <a href="#">
+                            <i class="fas fa-trash-alt float-right" data-toggle="modal" data-target="{{ '#threadDelete' }}" style="color:#ff9c9c" ></i>
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% elseif app.user %}
+            <a href="{{ path('app_user_account') }}" style="color:#68717a;">
+                To comment, please verify your email.
+            </a>
+        {% else %}
+            <a href="{{ path('app_register') }}" style="color:#68717a;">
+                Register to contribute to discussion.
+            </a>
+        {% endif %}
+    </div>
+</div>

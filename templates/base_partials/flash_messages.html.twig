@@ -1,0 +1,11 @@
+{% for flashError in app.flashes('error') %}
+    <span hidden class="flash-message-error">{{ flashError }}</span>
+{% endfor %}
+
+{% for flashSuccess in app.flashes('success') %}
+    <span hidden class="flash-message-success">{{ flashSuccess }}</span>
+{% endfor %}
+
+{% for flashWarning in app.flashes('warning') %}
+    <span hidden class="flash-message-warning">{{ flashWarning }}</span>
+{% endfor %}

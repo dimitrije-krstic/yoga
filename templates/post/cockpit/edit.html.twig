@@ -1,0 +1,92 @@
+{% extends('base.html.twig') %}
+
+{% if isVideoPost %}
+    {% set firstColumnClass = 'col-lg-8 mb-4' %}
+    {% set secondColumnClass = 'col-lg-4 mb-4' %}
+{% else %}
+    {% set firstColumnClass = 'col-lg-9 mb-4' %}
+    {% set secondColumnClass = 'col-lg-3 mb-4' %}
+{% endif %}
+
+{% block content %}
+    <div class="row col-12">
+        <div class="card col-12 mt-3">
+            <div class="card-header">
+                <h2>Edit Your {% if isVideoPost %}Video {% endif %}Post</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="{{ firstColumnClass }}">
+                        <div class="row col-lg-12 mb-2" style="justify-content:space-between;">
+                            <a href="{{ path('app_user_post_list') }}"><i class="fas fa-backward"></i>
+                                back to the list
+                            </a>
+                            <a href="{{ path('app_post_view_page', {'slug': post.slug}) }}" class="btn btn-default">
+                                {% if post.publishedAt is null %}Preview{% else %}View{% endif %}
+                            </a>
+                        </div>
+
+                        {{ include('post/cockpit/_form.html.twig', {
+                            buttonText: 'Update'
+                        }) }}
+                    </div>
+
+                    <div class="{{ secondColumnClass }}">
+                        {% if isVideoPost %}
+                            <div class="row col-12">
+                                <img src="https://i.ytimg.com/vi/{{ post.youtubeVideoId }}/hqdefault.jpg" width="100%" /><br>
+                                <small>To play your video go to <a href="{{ path('app_post_view_page', {'slug': post.slug}) }}">post preview page</a></small>
+                            </div>
+                        {% else %}
+                            <div class="row mb-1">
+                                <h3>Image Gallery</h3>
+                                <div data-toggle="modal" data-target="#postImageUploadInfo">
+                                    <a href="#">
+                                        <i class="fas fa-info-circle tooltip-show" style="color:#007bff; padding-left:5px;"
+                                        title="How to add image to the post text."></i>
+                                    </a>
+                                </div>
+                                {% include 'post/cockpit/_image_upload_info.html.twig' %}
+                            </div>
+
+                            {{ form_start(imageUploadForm) }}
+                                <div class="row mb-2">
+                                    <div class="form-error text-danger col-12">
+                                        {{ form_errors(imageUploadForm.imageFile) }}
+                                    </div>
+                                    <div id="imageUploadButton" class="col-12" style="padding-left:0px; display: inline-block;">
+                                        <label class="btn btn-primary"> Upload Post Images
+                                            {{ form_widget(imageUploadForm.imageFile) }}
+                                        </label>
+                                    </div>
+                                    <div id="imageUploadButtonSpinner" class="spinner-grow text-primary" style="display: none"></div>
+                                    <button id="submit-image-upload" type="submit" hidden></button>
+                                </div>
+                            {{ form_end(imageUploadForm) }}
+
+                            {% for image in post.images %}
+                                <div class="row mb-2 clearfix">
+                                    <img src="{{ asset(post.smallImagePath(image)) }}"
+                                         style="max-width:90%; border-radius:4px">&nbsp;
+                                    <a href="{{ path('app_user_delete_post_image', { 'id': post.id, 'fileName': image }) }}">
+                                        <i style="color:red;" class="fas fa-minus-circle"></i>
+                                    </a>
+                                    {{ '/'~post.imagePath(image) }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.tiny.cloud/1/4zbiepraxobtryh7faeyxg2vbdtlv4ifaer5oh82w4ge47fq/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    {{ encore_entry_script_tags('edit-post') }}
+{% endblock %}
+
+

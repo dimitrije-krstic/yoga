@@ -1,0 +1,80 @@
+name: app
+
+type: php:7.4
+
+disk: 512
+
+runtime:
+  extensions:
+    - redis
+    - imagick
+    - xsl
+    - newrelic
+
+relationships:
+  database: "db:mysql"
+  sessionstorage: "redis:redis"
+
+variables:
+  env:
+    APP_ENV: "prod"
+    APP_DEBUG: 0
+    NVM_VERSION: v0.36.0
+    NODE_VERSION: v14.13.1
+  php:
+    session.save_handler: redis
+    session.save_path: "tcp://sessionstorage.internal:6379"
+
+mounts:
+  "/var/cache":
+    source: local
+    source_path: "cache"
+  "/var/log":
+    source: local
+    source_path: "log"
+  "/public/uploads":
+    source: service
+    service: files
+    source_path: "uploads"
+
+web:
+  locations:
+    "/":
+      root: "public"
+      passthru: "/index.php"
+      index:
+        - index.php
+      expires: -1
+      scripts: true
+      allow: true
+
+build:
+  flavor: composer
+
+dependencies:
+  php:
+    composer/composer: '^2'
+  nodejs:
+    yarn: "1.22.5"
+
+hooks:
+  build: |
+    set -e
+
+    unset NPM_CONFIG_PREFIX
+    export NVM_DIR="$PLATFORM_APP_DIR/.nvm"
+    # install.sh will automatically install NodeJS based on the presence of $NODE_VERSION
+    curl -f -o- https://raw.githubusercontent.com/nvm-sh/nvm/$NVM_VERSION/install.sh | bash
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+    yarn install --force --cache-folder yarn_cache
+    yarn build
+    rm -rf yarn_cache
+    rm -rf node_modules
+    bin/console assets:install --symlink --relative public
+    bin/console cache:clear --env=prod
+  deploy: |
+    set -e
+    bin/console doctrine:migrations:migrate -n
+    bin/console assets:install --symlink --relative public
+    bin/console cache:clear --env=prod

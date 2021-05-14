@@ -1,0 +1,294 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+    <div class="row col-12">
+        <div class="card col-12 mt-3">
+            <div class="card-body">
+
+                <div class="row col-12 mb-4">
+                    <div class="col-sm-1" style="padding-right:100px;">
+                        <a href='#' class="trigger-empty-modal" data-path="{{ path('app_member_details', {'slug': app.user.slug })}}">
+                            <img  style="border-radius: 50%; padding-right:20px; max-width:120px;"
+                                  src="{{ asset(app.user.profileImagePath) }}">
+                        </a>
+                        {% if app.user.patron  %}
+                            <img class="tooltip-show" title="patron" style="width:60px; position: absolute; left:-20px; top:-20px;" src="{{ asset('build/images/app/patron-icon.png') }}"/>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-6">
+                        <h2>Manage Your Account</h2>
+                        <p>
+                            {% if app.user.profileImage is not null %}
+                                Profile image
+                                <a  href="{{ path('app_user_account_delete_profile_image') }}"
+                                    style="color:gray;" class="fas fa-trash-alt"
+                                    title="Delete Profile Image">
+                                </a>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h3>Basic Profile Info</h3>
+                        <div class="row">
+                            <div class="form-error text-danger col-lg-10">
+                                {{ form_errors(form.name) }}
+                            </div>
+                            <div class="input-group mb-3 col-lg-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-user"></span>
+                                    </div>
+                                </div>
+                                {{ form_widget(form.name) }}
+                            </div>
+                        </div>
+                        {% if not app.user.verified %}
+                            <div class="row">
+                                <div class="text-danger mb-3 col-12">
+                                    Please verify your email.
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="input-group mb-3 col-lg-10">
+                                <div class="input-group-text"
+                                     style="max-width:100%; border: 1px solid; border-color:{% if not app.user.verified %}#dc3545;{% else %}green;{% endif %} border-radius: .25rem;"
+                                >
+                                    <i class="fas fa-envelope"></i>
+                                    <div style="padding-left:20px; overflow:scroll">{{ app.user.email }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if not app.user.verified %}
+                            <div class="row">
+                                <div class="input-group mb-3 col-lg-12">
+                                    <a href="{{ path('app_user_email_verification_request') }}"
+                                       class="btn btn-default">Resend verification link
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="form-error text-danger col-lg-10">
+                                {{ form_errors(form.newEmail) }}
+                            </div>
+                            <div class="input-group mb-3 col-lg-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                </div>
+                                {{ form_widget(form.newEmail) }}
+                            </div>
+                        </div>
+
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <div class="form-error text-danger col-lg-10">
+                                {{ form_errors(form.newPassword.first) }}
+                            </div>
+                            {% for passwordField in form.newPassword %}
+                                <div class="row">
+                                    <div class="input-group mb-3 col-lg-10">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <span class="fas fa-lock"></span>
+                                            </div>
+                                        </div>
+                                        {{ form_widget(passwordField) }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <a class="tooltip-show" href="{{ path('app_login') }}" title="click to login again">
+                                <div class="row">
+                                    <div class="input-group mb-3 col-lg-10">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                    <span class="fas fa-lock" style="color:red;"></span>
+                                            </div>
+                                        </div>
+                                        <input class="form-control" type="password" disabled style=" overflow:scroll"
+                                               placeholder="Login to change password">
+                                    </div>
+                                </div>
+                            </a>
+                        {% endif %}
+
+                        <div class="row">
+                            {{ form_errors(form.currentLocation) }}
+                            <div class="input-group mb-3 col-lg-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-globe-americas"></span>
+                                    </div>
+                                </div>
+                                {{ form_widget(form.currentLocation) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-error text-danger col-lg-10">
+                                {{ form_errors(form.photo) }}
+                            </div>
+                            <div class="mb-1 col-lg-10">
+                                <label class="btn btn-default"> Change Profile Image
+                                    {{ form_widget(form.photo) }}
+                                </label>
+                                <label class="user-image-upload-name"></label>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 mb-3">
+                            <h3>Site Preferences</h3>
+                        </div>
+                        <div class="row">
+                            <div class="input-group mb-3 col-lg-6">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <span class="far fa-clock"></span>
+                                    </div>
+                                </div>
+                                {{ form_widget(form.timezone) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-10 mb-3">
+                                <div class="form-check">
+                                    {{ form_widget(form.accountPubliclyVisible) }}
+                                    <label class="form-check-label">
+                                        Profile info visible to non-members
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h3>More About You</h3>
+                        <div class="row">
+                            <div class="form-error text-danger col-lg-12">
+                                {{ form_errors(form.userInfo.introduction) }}
+                            </div>
+                            <div class="input-group mb-3 col-12">
+                                {{ form_widget(form.userInfo.introduction) }}
+                            </div>
+                        </div>
+                        <h3>Your Web Presence</h3>
+                        <div class="row">
+                            <div class="form-error text-danger col-lg-10">
+                                {{ form_errors(form.userInfo.personalWebsite) }}
+                            </div>
+                            <div class="input-group mb-3 col-lg-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-home"></span>
+                                    </div>
+                                </div>
+                                {{ form_widget(form.userInfo.personalWebsite) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-error text-danger col-lg-10">
+                                {{ form_errors(form.userInfo.youtubeAccount) }}
+                            </div>
+                            <div class="input-group mb-3 col-lg-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <span class="fab fa-youtube"></span>
+                                    </div>
+                                </div>
+                                {{ form_widget(form.userInfo.youtubeAccount) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-error text-danger col-lg-10">
+                                {{ form_errors(form.userInfo.facebookAccount) }}
+                            </div>
+                            <div class="input-group mb-3 col-lg-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <span class="fab fa-facebook-square"></span>
+                                    </div>
+                                </div>
+                                {{ form_widget(form.userInfo.facebookAccount) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-error text-danger col-lg-10">
+                                {{ form_errors(form.userInfo.instagramAccount) }}
+                            </div>
+                            <div class="input-group mb-3 col-lg-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <span class="fab fa-instagram-square"></span>
+                                    </div>
+                                </div>
+                                {{ form_widget(form.userInfo.instagramAccount) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-error text-danger col-lg-10">
+                                {{ form_errors(form.userInfo.twitterAccount) }}
+                            </div>
+                            <div class="input-group mb-3 col-lg-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <span class="fab fa-twitter-square"></span>
+                                    </div>
+                                </div>
+                                {{ form_widget(form.userInfo.twitterAccount) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-error text-danger col-lg-10">
+                                {{ form_errors(form.userInfo.linkedinAccount) }}
+                            </div>
+                            <div class="input-group mb-3 col-lg-10">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <span class="fab fa-linkedin"></span>
+                                    </div>
+                                </div>
+                                {{ form_widget(form.userInfo.linkedinAccount) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mt-3 col-6">
+                        <button type="submit" class="btn btn-primary" style="color:white"> Update your Profile</button>
+                    </div>
+                    {% if not is_granted('ROLE_ADMIN') and app.user.deletedAt is null %}
+                        <div class="mt-3 col-6">
+                            <button type="button" class="btn btn-default float-right " data-toggle="modal" data-target="#delete-profile">
+                                Delete Profile
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+
+        {% if not is_granted('ROLE_ADMIN') %}
+            {% include 'base_partials/_modal.html.twig' with {
+                'dataTargetId': 'delete-profile',
+                'modalSize': 'modal-md',
+                'backgroundColor': 'bg-danger',
+                'title': 'Delete Your Profile',
+                'bodyText': {
+                    1: 'If you continue, you will delete your acount with all your private data.',
+                    2: 'However, all contributions you have made will be keept under anonymous user profile.',
+                    3: 'If you wish to delete your contributions as well, you need to manually delete them first.'
+                },
+                'confirmationPath': path('app_user_account_delete'),
+                'confirmationButtonText': 'Delete Profile'
+            } %}
+        {% endif %}
+
+    </div>
+{% endblock %}

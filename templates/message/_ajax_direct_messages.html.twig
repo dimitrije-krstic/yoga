@@ -1,0 +1,16 @@
+<div class="row mb-3" id="contactMemberForm" style="display:none"
+     data-path="{{ path('app_member_message_contact', {'slug': member.slug}) }}">
+
+    <div id="messageError" class="mb-3" style="color:red; font-size: 16px;"></div>
+
+    <input id="subject" type="text" class="form-control" placeholder="Subject">
+
+    <textarea id="message" class="form-control mt-2" placeholder="Your Message..."></textarea>
+
+    <button id="sendMessage" class="btn btn-primary mt-2">Send</button>
+
+    <button id="cancelSendMessage" class="btn btn-default mt-2" style="margin-left:10px;">Cancel</button>
+
+</div>
+
+{{ encore_entry_script_tags('messages') }}

@@ -1,0 +1,33 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+    {% if searchPlaceholder is not defined or searchPlaceholder is null %}
+        {%  set searchPlaceholder = 'Search by title and tag' %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-12 col-md-6">
+            {% include 'post/_search.html.twig' with {'name': 'query', 'placeholder': searchPlaceholder} %}
+        </div>
+    </div>
+
+    {% if dataWrapper is defined %}
+        <div class="row">
+            {% for post in dataWrapper.posts %}
+                <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                    {% include 'post/_post_teaser.html.twig' %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if pagination is defined %}
+        <div class="row">
+            <div class="col-12">
+                {{  knp_pagination_render(pagination) }}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+

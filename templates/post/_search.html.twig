@@ -1,0 +1,28 @@
+<form method="GET">
+    <div class="mb-3 mt-3">
+
+        <div class="input-group">
+            <select name="category" onchange="this.form.submit()" class="form-control" style="max-width:150px;!important;">
+                <option value="all">all</option>
+                {% set categories = constant('App\\Entity\\Post::CATEGORY') %}
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if app.request.query.get('category') == category %}selected="selected"{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="text"
+                   name={{ name }}
+                   class="form-control"
+                   value="{{ app.request.query.get(name) }}"
+                   placeholder="{% if placeholder is defined %}{{ placeholder }}{% else %}Search...{% endif %}"
+            >
+            <div class="input-group-append">
+                <button type="submit"
+                        class="btn btn-outline-secondary">
+                    <span class="fa fa-search"></span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</form>

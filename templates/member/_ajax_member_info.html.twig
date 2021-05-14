@@ -1,0 +1,118 @@
+<div class="row">
+    <div class="card col-12" style="box-shadow:none; margin-bottom:0;">
+        <div class="card-body" style="font-family: Arial, Helvetica, sans-serif; font-size: 18px; padding-top:0px; padding-bottom:0px;">
+
+            <div class="row mb-3">
+                <div class="col-12 col-sm-4 col-md-4 col-lg-3 mb-3">
+                    <img style="border-radius: 50%; padding-right:20px; max-width:150px; margin-left:-20px;"
+                         src="{{ asset(member.profileImagePath) }}">
+                    {% if app.user and member.patron  %}
+                        <img style="width:60px; position: absolute; left:-25px; top:-20px;" title="patron" class="tooltip-show" src="{{ asset('build/images/app/patron-icon.png') }}"/>
+                    {% endif %}
+                </div>
+                <div class="col-12 col-sm-8 col-md-8 col-lg-9">
+                    <div class="row break-long-words mb-1" style="font-size: 20px;">
+                        <b>{{ member.name }}</b>
+                    </div>
+                    {% if member.currentLocation %}
+                        <div class="row mb-1">
+                            <small><i class="fas fa-map-marker-alt"></i>&nbsp;{{ member.currentLocation }}</small>
+                        </div>
+                    {% endif %}
+                    <div class="row mb-3">
+                        </i><small><i class="fas fa-user"></i> since {{ member.createdAt|ago }}</small>
+                    </div>
+
+                    {% if member.accountPubliclyVisible or (app.user and app.user.verified) %}
+                        <div class="row">
+                            {% if member.userInfo is defined and member.userInfo is not null %}
+                                {% if member.userInfo.personalWebsite %}
+                                    <a href="{{ member.userInfo.personalWebsite}}" style="padding-right:30px; padding-bottom:20px;" target="_blank" >
+                                        <i class="tooltip-show fas fa-home fa-lg" title="personal website" style="width:25px; color:light-blue"></i>
+                                    </a>
+                                {% endif %}
+                                {% if member.userInfo.facebookAccount %}
+                                    <a href="{{ member.userInfo.facebookAccount }}" style="padding-right:30px; padding-bottom:20px;" target="_blank" >
+                                        <i class="tooltip-show fab fa-facebook-square fa-lg" title="follow on facebook" style="width:25px; color:#3b5998;"></i>
+                                    </a>
+                                {% endif %}
+                                {% if member.userInfo.instagramAccount %}
+                                    <a href="{{ member.userInfo.instagramAccount }}" style="padding-right:30px; padding-bottom:20px;" target="_blank" >
+                                        <i class="tooltip-show fab fa-instagram fa-lg" title="follow on instagram" style="width:25px; color:purple"></i>
+                                    </a>
+                                {% endif %}
+                                {% if member.userInfo.twitterAccount %}
+                                    <a href="{{ member.userInfo.twitterAccount}}" style="padding-right:30px; padding-bottom:20px;" target="_blank" >
+                                        <i class="tooltip-show fab fa-twitter fa-lg" title="follow on twitter" style="width:25px; color:#00acee;"></i>
+                                    </a>
+                                {% endif %}
+                                {% if member.userInfo.youtubeAccount %}
+                                    <a href="{{ member.userInfo.youtubeAccount}}" style="padding-right:30px; padding-bottom:20px;" target="_blank" >
+                                        <i class="tooltip-show fab fa-youtube fa-lg" title="follow on youtube" style="width:25px; color:red;"></i>
+                                    </a>
+                                {% endif %}
+                                {% if member.userInfo.linkedinAccount %}
+                                    <a href="{{ member.userInfo.linkedinAccount }}" style="padding-right:30px; padding-bottom:20px;" target="_blank" >
+                                        <i class="tooltip-show fab fa-linkedin fa-lg" title="follow on linkedin" style="width:25px; color:#0e76a8;"></i>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if postCount > 0 %}
+                                <a href="{{ path('app_post_member_page', {'slug': member.slug }) }}" style="color:#0b79b8; padding-right:30px; padding-bottom:20px;;">
+                                    <i class="far fa-file-alt tooltip-show fa-lg" title="member's posts"></i>
+                                </a>
+                            {% endif %}
+                            {#
+                            {% if eventsCount > 0 %}
+                                <a href="{{ path('app_member_upcoming_events', {'slug': member.slug }) }}" style="color:#a6125a; padding-right:30px; padding-bottom:20px;">
+                                    <i class="far fa-calendar-alt tooltip-show fa-lg" title="member´s events"></i>
+                                </a>
+                            {% endif %}
+                            #}
+                        </div>
+                    {% endif %}
+
+                    {% if app.user and app.user.id != member.id %}
+                        <div class="row mb-3">
+                            {% if followedByUser %}
+                                <a href="{{ path('app_member_unfollow', {'slug': member.slug}) }}"
+                                   style="padding-right:10px;">
+                                    <span class="btn btn-default">Unfollow</span>
+                                </a>
+                            {% else %}
+                                <a href="{{ path('app_member_follow', {'slug': member.slug}) }}"  style="padding-right:10px;">
+                                    <span class="btn btn-success">Follow</span>
+                                </a>
+                            {% endif %}
+                            {% if app.user.verified %}
+                                <a href="#" id="contactMember">
+                                    <span class="btn btn-primary">Contact</span>
+                                </a>
+                            {% endif %}
+                        </div>
+
+                        {% include 'message/_ajax_direct_messages.html.twig' %}
+
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if member.userInfo is defined and member.userInfo is not null %}
+                {% if member.userInfo.introductionInParagraphs|length >= 1  %}
+                    <h4>About</h4>
+                {% endif %}
+                {% for pragraph in member.userInfo.introductionInParagraphs %}
+                    <div class="col-12 mb-3 break-long-words" style="padding-left: 0px;">
+                        {{ pragraph|striptags|format_links|raw }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+{% if app.user is null or app.user.id == member.id %}
+    {{ encore_entry_script_tags('messages') }}
+{% endif %}

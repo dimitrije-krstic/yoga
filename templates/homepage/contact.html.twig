@@ -1,0 +1,92 @@
+{% extends('security/base.html.twig') %}
+
+{% block box %}
+    <div class="register-box">
+
+        <div class="register-logo">
+            <b>WeAreYogis</b> Contact
+        </div>
+
+        <div class="card">
+            <div class="card-body register-card-body">
+
+                <a href="{{ path('app_homepage') }}" class="btn btn-tool btn-sm float-right">
+                    <i class="fas fa-times"></i>
+                </a>
+
+                <div class="row">
+                    {% for flashError in app.flashes('error') %}
+                        <span class="form-error text-danger mb-3 mt-3">{{ flashError }}</span>
+                    {% endfor %}
+
+                    {% for flashSuccess in app.flashes('success') %}
+                        <span class="form-error text-success mb-3 mt-3">{{ flashSuccess }}</span>
+                    {% endfor %}
+                </div>
+
+                <p class="login-box-msg">Send us a message</p>
+
+                {{ form_start(form) }}
+
+                {% if app.user is null or not app.user.verified %}
+                    <div class="form-error text-danger">{{ form_errors(form.name) }}</div>
+
+                    <div class="input-group mb-3">
+                        {{ form_widget(form.name) }}
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-error text-danger">{{ form_errors(form.email) }}</div>
+
+                    <div class="input-group mb-3">
+                        {{ form_widget(form.email) }}
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="row mb-3">
+                    <div class="form-error text-danger">{{ form_errors(form.subject) }}</div>
+                    <div class="col-12">
+                    {{ form_widget(form.subject) }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="form-error text-danger">{{ form_errors(form.content) }}</div>
+                    <div class="col-12">
+                        {{ form_widget(form.content) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-error text-danger">{{ form_errors(form.captchaCode) }}</div>
+                    <div class="col-12">
+                        {{ form_widget(form.captchaCode) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block">Send</button>
+                    </div>
+                </div>
+                {{ form_end(form) }}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+
+

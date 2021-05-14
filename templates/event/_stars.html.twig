@@ -1,0 +1,14 @@
+{% for i in 1..5 %}
+    {% set toggled = (i <= averageRating|round) %}
+    {% set half = (averageRating|round == i and averageRating|round(0, 'floor') != averageRating) %}
+
+    {% if half %}
+        {% set className = "fas fa-star-half-alt" %}
+    {% elseif toggled %}
+        {% set className = "fas fa-star" %}
+    {% else %}
+        {% set className = "far fa-star" %}
+    {% endif %}
+
+    <i class="{{ className }}" aria-hidden="true" style="color:#ff6969"></i>
+{% endfor %}

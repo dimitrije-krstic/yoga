@@ -1,0 +1,22 @@
+{% set tabs = ['inbox', 'sent', 'admin', 'forum', 'spam'] %}
+<div class="card-header p-0 border-bottom-0">
+    <ul class="nav nav-tabs">
+        {% for tab in tabs %}
+            <li class="nav-item">
+                <a class="nav-link {% if tab == activeTab %}active{% endif %}" href="{{ path('app_message_center', {'activeTab':tab}) }}" style="color:#333333; {% if tab == activeTab %}border-top: 3px solid #ff9078 !important;{% endif %}">
+                    <i class="fas {% if tab == 'inbox' %}fa-inbox{% elseif tab == 'sent' %}fa-paper-plane{% elseif tab == 'spam' %}fa-eye-slash{% elseif tab == 'admin' %}fa-user-cog{% elseif tab == 'forum' %}fa-comments{% endif %}"></i>&nbsp;&nbsp;
+                    <span style="padding-right:10px;">{% if tab == 'forum' %}my{% endif %}{{ tab|capitalize }}</span>
+                    {% if tab == 'inbox' and unreadInbox %}
+                        <span class="badge bg-danger">{{ unreadInbox }}</span>
+                    {% elseif tab == 'sent' and unreadSent %}
+                        <span class="badge bg-danger">{{ unreadSent }}</span>
+                    {% elseif tab == 'admin' and unreadAdmin %}
+                        <span class="badge bg-danger">{{ unreadAdmin }}</span>
+                    {% elseif tab == 'forum' and unreadForum %}
+                        <span class="badge bg-success">{{ unreadForum }}</span>
+                    {% endif %}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

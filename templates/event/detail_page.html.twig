@@ -1,0 +1,248 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+    <div class="row">
+        <div class="card col-12 mt-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-lg-9 col-md-8 mb-4">
+                        <div class="col-12 col-lg-11">
+                            {% if is_granted('EVENT_AUTHOR', currentEvent) %}
+                                <div class="row">
+                                    {% if currentEvent.published is null %}
+                                        <div class="mb-3 col-12"  style="background-color:#cccccc; text-align: center;">
+                                            <b>PREVIEW:</b>&nbsp;This event is not published yet.
+                                        </div>
+                                    {% endif %}
+                                    <div class="col-12">
+                                        <div class="float-right">
+                                            {% if currentEvent.cancelled %}
+                                                <a href="{{ path('app_cockpit_event_list') }}"
+                                                   class=" btn btn-sm btn-default">
+                                                    Back to list
+                                                </a>
+                                            {% else %}
+                                                <a href="{{ path('app_cockpit_event_edit', { 'id': currentEvent.id}) }}"
+                                                   class=" btn btn-sm btn-default">
+                                                    Edit Your Event
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="row col-12">
+                                {% set topic = ['Asanas & Pranayamas', 'Meditation', 'Kirtan & Chanting', 'Satsang', 'Diverse'] %}
+                                <h1>{{ topic[currentEvent.category-1] }}</h1>
+                            </div>
+
+                            <div class="row col-12 mb-3 break-long-words">
+                                <h4>with {{ currentEvent.organizer.name }}</h4>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-5 col-sm-4 col-md-3 col-lg-2">
+                                    <a href='#' class="trigger-empty-modal" data-path="{{ path('app_member_details', {'slug': currentEvent.organizer.slug })}}">
+                                        <img style="border-radius: 50%; padding-right:20px; max-width:120px;" class="tooltip-show" title="organizer info"
+                                             src="{{ asset(currentEvent.organizer.profileImagePath) }}">
+                                    </a>
+                                    <div class="col-12 mt-3" style="padding-left:10px;">
+                                        {% if app.user.id != currentEvent.organizer.id and app.user.verified and currentEvent.cancelled == null %}
+                                            <a href="#" class="eventBookmark" data-path="{{ path('app_event_bookmark', {'id': currentEvent.id}) }}">
+                                                <button class="btn btn-sm btn-default" style="border-radius:20px;">
+                                                    <i id="bookmarkEvent" class="{% if isParticipant %}fas{% else %}far{% endif %} fa-bookmark tooltip-show fa-lg"
+                                                       title="bookmark event" style="color:#800080;"></i><br>Bookmark
+                                                </button>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-7 col-sm-8 col-md-9 col-lg-10">
+                                    <div class="col-12">
+                                        {% if currentEvent.cancelled %}
+                                            <span style="color:red;"><i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;Cancelled</span><br>
+                                        {% endif %}
+                                        <i class="fa fa-calendar-alt"></i>&nbsp;&nbsp;{{ currentEvent.start|date('F j, Y') }}<br>
+                                        <i class="far fa-clock"></i>&nbsp;&nbsp;{{ currentEvent.start|date('h:i A') }}<br>
+                                        <i class="fas fa-globe-americas"></i>&nbsp;&nbsp;{{ currentEvent.timezone|timezone_name }}<br>
+                                        <i class="fas fa-hourglass-half"></i>&nbsp;&nbsp;{{ currentEvent.getFormatedDuration}}<br>
+                                        {% if app.user.id == currentEvent.organizer.id %}
+                                            <i class="fas fa-users"></i>&nbsp;{{ participantCount }}<br>
+                                            <i class="fas fa-link"></i>
+                                                {% if currentEvent.link %}
+                                                    &nbsp;<a href="{{ currentEvent.link }}" target="_blank">click here to go to event</a>
+                                                {% endif %}
+                                            <br>
+                                            <i class="fas fa-unlock-alt"></i>&nbsp;&nbsp;{{ currentEvent.linkPassword }}
+                                        {% endif %}
+                                    </div>
+
+                                    {% if app.user.id != currentEvent.organizer.id and app.user.verified and currentEvent.cancelled == null %}
+                                        <div class="col-12">
+                                            <i class="fas fa-users"></i>&nbsp;
+                                            <span id="eventParticipants" style="padding-right:10px;">
+                                                {{ participantCount }}
+                                            </span>
+                                            <br>
+                                            <span id="showEventBookmarkText" {% if isParticipant %}style="display: none;"{% endif %}>
+                                                Bookmark to get event link and receive notifications
+                                            </span>
+                                            <span id="showEventLinkToParticipant" {% if not isParticipant %}style="display: none;"{% endif %}>
+                                                {% if currentEvent.link %}
+                                                    <i class="fas fa-link" style="color:#800080;"></i>
+                                                    <a href="{{ currentEvent.link }}" target="_blank">click here to go to event</a>
+                                                    <br>
+                                                {% else %}
+                                                    <span class="tooltip-show" title="You will get notification as soon as the organizer adds event link.">
+                                                        Link not available yet
+                                                        <br>
+                                                    </span>
+                                                {% endif %}
+                                            </span>
+                                            {% if currentEvent.linkPassword %}
+                                                <span id="eventPassword" style="{% if not isParticipant %}display: none;{% endif %}">
+                                                    <i class="fas fa-unlock-alt" style="color:#800080;"></i>&nbsp;&nbsp;{{ currentEvent.linkPassword }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+
+                                    {% if currentEvent.cancelled and isParticipant %}
+                                        <div class="col-12 mt-2">
+                                            <a href="{{ path('app_event_bookmark', {'id': currentEvent.id}) }}" style="color:#ff6969;">
+                                                <i class="fas fa-bookmark tooltip-show" title="remove"></i> Remove from bookmarks
+                                            </a>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if not app.user.verified %}
+                                        <div class="col-12 mt-2">
+                                            <a href="{{ path('app_user_account') }}" style="color:#68717a;">
+                                                Please verify your email to access the event
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row col-12 mb-1 break-long-words" style="padding-top:20px;">
+                                <h3>{{ currentEvent.title }}</h3>
+                            </div>
+
+                            <div>
+                                {% for paragraph in currentEvent.descriptionInParagraphs %}
+                                    <div class="row col-12">
+                                        <div class="mb-3 break-long-words" style="font-family: Arial, Helvetica, sans-serif; font-size: 18px;">
+                                            {{ paragraph|striptags|format_links|raw}}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            {%  if participantCount %}
+                                <div class="row col-12 mt-3">
+                                    <h4>Bookmarked by</h4>
+                                </div>
+
+                                <div class="row col-12">
+                                    {% for participant in participants %}
+                                        <div class="col-1">
+                                            <a href='#' class="trigger-empty-modal"
+                                               data-path="{{ path('app_member_details', {'slug': participant.slug })}}">
+                                                <img style="border-radius: 50%; max-width:40px;" src="{{ asset(participant.profileImage) }}"
+                                                class="tooltip-show" title="member info">
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div class="mt-4">
+                                {% if currentEvent.published is not null %}
+
+                                    {% if commentDataWrapper|length or app.user.verified %}
+                                        <div class="row col-12">
+                                            <h4>Ask Organizer</h4>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if app.user.verified %}
+                                        {{ form_start(form) }}
+                                        <div class="row col-12 form-error text-danger">
+                                            {{ form_errors(form.content) }}
+                                        </div>
+                                        <div class="row col-12 mb-2">
+                                            {{ form_widget(form.content) }}
+                                        </div>
+                                        <div class="row col-12 mb-3">
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                {% if app.user == currentEvent.organizer %}Post an answer{% else %}Post a question{% endif %}
+                                            </button>
+                                        </div>
+                                        {{ form_end(form) }}
+                                    {% else %}
+                                        <a href="{{ path('app_user_account') }}" style="color:#68717a;">
+                                            To comment, please verify your email.
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+
+                                <div class="mt-4">
+                                    {% include 'comment/_comment_list.html.twig' %}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-3 col-md-4 mb-4">
+                        {% if eventDataWrapper.events is not empty %}
+                            <div class="row">
+                                {% for event in eventDataWrapper.events %}
+                                    <div class="col-md-12 col-sm-6 col-12">
+                                        {% include 'event/_event_teaser.html.twig' %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-12" style="text-align: center; padding-bottom:20px;">
+                                <h5>
+                                    <a href="{{ path('app_member_upcoming_events', {'slug': currentEvent.organizer.slug }) }}">
+                                        See all upcoming events...
+                                    </a>
+                                </h5>
+                            </div>
+                        {% endif %}
+
+                        {% if lastReviews is not empty %}
+                            <div class="row">
+                                {% for review in lastReviews %}
+                                    <div class="col-md-12 col-12 col-sm-6">
+                                        {% include '/event/_review_teaser.html.twig' %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12 " style="text-align: center;">
+                                    <h5>
+                                        <a href="{{ path('app_event_member_reviews', {'slug': currentEvent.organizer.slug }) }}">
+                                            See all reviews ...
+                                        </a>
+                                    </h5>
+                                </div>
+                            </div>
+
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('event') }}
+{% endblock %}
+
+

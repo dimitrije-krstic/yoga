@@ -1,0 +1,15 @@
+# See full configuration at https://github.com/bestit/flagception-bundle
+flagception:
+    features:
+        social_network_login:
+            default: true
+        site_maintenance_unlock:
+            default: false
+    activators:
+        cookie:
+            enable: true
+            name: 'sandbox'
+    routing_metadata:
+        enable: true
+    annotation:
+        enable: true

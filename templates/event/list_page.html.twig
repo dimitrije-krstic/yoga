@@ -1,0 +1,55 @@
+{% extends('base.html.twig') %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            {% include 'event/_search.html.twig' %}
+        </div>
+        {% if app.user %}
+            <img src="{{ asset('build/images/app/free-sm.png') }}" width="50" style="position: absolute; top:0px, left:0px;">
+        {% endif %}
+    </div>
+
+    {% if not app.user %}
+    <div class="row mb-3">
+        <div class="col-12">
+            All events are<span><img src="{{ asset('build/images/app/free-sm.png') }}" width="50"></span>
+            <a href="{{ path('app_register') }}">
+                Register for more info.
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if eventDataWrapper is defined %}
+        <div class="row">
+            {% for event in eventDataWrapper.events %}
+                <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                    {% include 'event/_event_teaser.html.twig' %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if pagination is defined %}
+        <div class="row">
+            <div class="col-12">
+                {{  knp_pagination_render(pagination) }}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    {{ encore_entry_script_tags('event') }}
+{% endblock %}
+
+

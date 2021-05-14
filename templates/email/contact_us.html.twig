@@ -1,0 +1,34 @@
+{% extends ('email/base.html.twig')  %}
+
+{% block emailbody %}
+
+    <row>
+        <columns>
+            <h3>
+                <center>
+                    <div>
+                        {{ subject }}
+                    </div>
+                </center>
+            </h3>
+
+            <spacer size="35"></spacer>
+            <center>
+                <div>
+                    Sender Email: {{ userEmail }}
+                </div>
+                <div>
+                    Sender Name: {{ userName }}
+                </div>
+            </center>
+
+            <spacer size="35"></spacer>
+            <center>
+                <div>
+                   {{ content }}
+                </div>
+            </center>
+        </columns>
+    </row>
+
+{% endblock %}

@@ -1,0 +1,54 @@
+<div class="card">
+    <a href="{{ path('app_event_details', {'id': event.id}) }}" style="color:inherit;">
+        <div style="display: table; width:100%; background-image: url({{ asset('build/images/app/event-banner-'~event.category~'.jpg') }}); background-size: cover; height:95px;">
+            <div class="col-12 break-long-words d-sm-none" style="display:table-cell; vertical-align:middle; text-align:center; font-family: Arial, Helvetica, sans-serif; font-size:18px; text-align:center; min-height:60px;">
+                {{ event.title|length > 70 ? event.title|slice(0, 70) ~ '...' : event.title }}
+            </div>
+            <div class="col-12 break-long-words d-none d-sm-table-cell d-sm-block" style="vertical-align:middle !important; text-align:center; font-family: Arial, Helvetica, sans-serif; font-size:18px; text-align:center; min-height:60px;">
+                {{ event.title|length > 70 ? event.title|slice(0, 70) ~ '...' : event.title }}
+            </div>
+        </div>
+
+        {%  if event.published or (myEvents is defined and myEvents) %}
+            {% set topic = ['Asanas', 'Meditation', 'Kirtan', 'Satsang', 'Diverse'] %}
+            <div class="col-12 md-3 mt-2" style="text-align: center; padding-bottom:10px; color:#68717a; display: block;">
+                <i class="fas fa-users" style="padding-left:10px;"></i>&nbsp;{{ eventDataWrapper.participantCount(event) }}<br>
+                {% if event.cancelled %}
+                    <span style="color:red;"><i class="fas fa-exclamation-triangle"></i>&nbsp;Cancelled</span><br>
+                {% else %}
+                    {% if topic[event.category-1] %}{{ topic[event.category-1] }}{% endif %}<br>
+                {% endif %}
+                <i class="far fa-calendar-alt" style="padding-left:10px;"></i>&nbsp;{{ event.start|date('M j, Y') }}<br>
+                <i class="far fa-clock" style="padding-left:10px;"></i>&nbsp;{{ event.start|date('h:i A') }} <small>({{ event.timezoneShort }})</small><br>
+                <i class="fas fa-hourglass-half" style="padding-left:10px;"></i>&nbsp;{{ event.formatedDuration}}
+            </div>
+        {% endif %}
+    </a>
+
+    {% if tracking is defined and tracking and event.published and event.start > date() %}
+        <a href="{{ path('app_event_details', {'id': event.id}) }}" style="color:inherit;">
+            {%  if eventDataWrapper.updates(event) %}
+                <i title="updates" class="fas fa-bell fa-lg tooltip-show" style="position: absolute; right:10px; top:110px; color:red;"></i>
+            {% else %}
+                <i class="far fa-bell fa-lg" style="position: absolute; right:10px; top:110px; color:gray;"></i>
+            {% endif %}
+        </a>
+    {% endif %}
+
+    {% if eventDataWrapper.authorSlug(event) %}
+        <a href='#' class="trigger-empty-modal" data-path="{{ path('app_member_details', {'slug': eventDataWrapper.authorSlug(event) }) }}" >
+            <img class="tooltip-show" src="{{ asset(eventDataWrapper.eventAuthorImage(event)) }}"
+                 style="position: absolute; left:5px; top:100px; border-radius:50%; max-width:60px;" title="organizer info"/>
+        </a>
+    {% else %}
+        <img style="position: absolute; left:5px; top:100px; border-radius:50%; max-width:60px;"
+             src="{{ asset(eventDataWrapper.eventAuthorImage(event)) }}"/>
+    {% endif %}
+
+    {%  if tracking is defined %}
+        <div class="col-12" style="padding-bottom:10px;">
+            {% include 'event/cockpit/_actions.html.twig' %}
+        </div>
+    {% endif %}
+
+</div>

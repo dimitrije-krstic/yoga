@@ -1,0 +1,13 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+    <h1>Control Panel</h1>
+    <p>Welcome back ADMIN {{ app.user.name }}</p>
+    <p>Your email: {{ app.user.email }}</p>
+    {% if counter %}
+        <p><b>Visitors Counter:</b></p>
+        {% for item in counter %}
+            <p>{{ item.route }} : <b>{{ item.count }}</b></p>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

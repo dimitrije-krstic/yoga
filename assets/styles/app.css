@@ -1,0 +1,104 @@
+.direct-chat-text.float-left{
+    background-color:#ffe0da;
+    border:0px;
+    color:#212529;
+}
+
+.direct-chat-text.float-left::before{
+    border-right-color:#ffe0da;
+}
+
+.direct-chat-text.float-left::after{
+    border-right-color:#ffe0da;
+}
+
+.direct-chat-info .right>.direct-chat-text.float-right {
+    background-color:#c7e8ed;
+    border:0px;
+    color:#101010;
+}
+.direct-chat-info .right>.direct-chat-text::after, .direct-chat-info .right>.direct-chat-text::before {
+    border-left-color:#c7e8ed;
+}
+
+.app-tag {
+   background: #f2f2f2;
+   border: 1px solid #7a7a7a;
+   border-radius: 5px;
+   padding-left: 10px;
+   padding-right: 10px;
+   margin: 5px;
+}
+
+.slick-prev:before, .slick-next:before {
+    color:#8F1D21 !important;
+}
+
+.likePost .liked {
+    display: none;
+}
+
+.likePost:hover .liked {
+    display: inline;
+}
+
+.likePost:hover .not-liked-yet {
+    display: none;
+}
+
+.break-long-words {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-word;
+}
+
+.homepage-title-box {
+    background-color:white;
+    text-align: center;
+    opacity: 0.9;
+    font-family:'Barkentina Test Regular';
+    font-weight: bold;
+    padding:50px;
+    border-radius:50px;
+    margin-top:-220px;
+}
+
+.homepage-title {
+    color:#df3487;
+    font-weight: bold;
+}
+
+.homepage-subtitle {
+    color:#0b88d0;
+    font-weight: bold;
+    padding-top:25px;
+}
+
+.chat-text-wrapper > p {
+    margin: 0px;
+}
+
+*:focus {
+  outline: 0 !important;
+}
+
+.postContentImage {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    display: block;
+    border-radius: 25px;
+    object-fit: contain;
+}
+
+.postContentWrapper {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    line-height:1.7;
+    color:#444
+}
+
+.tox-form__grid {
+    display:none !important;
+}

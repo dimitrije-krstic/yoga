@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    {% block seo %}
+        {# General #}
+        <meta name="description" content="Social Network for Yogis: share, inspire, get inspired."/>
+        <meta name="keywords" content="yoga social network community connect online share" />
+
+        {# Schema.org markup for Google+ #}
+        <meta itemprop="name" content="WeAreYogis">
+        <meta itemprop="description" content="Social Network for Yogis: share, inspire, get inspired.">
+        <meta itemprop="image" content="{{ asset('build/images/app/yoga-icon.png') }}">
+
+        {# Twitter Card data #}
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@AreYogis">
+        <meta name="twitter:title" content="WeAreYogis">
+        <meta name="twitter:description" content="Social Network for Yogis: share, inspire, get inspired.">
+        <meta name="twitter:image" content="{{ asset('build/images/app/yoga-icon.png') }}">
+
+        {# Open Graph data #}
+        <meta property="og:title" content="Social Network for Yogis." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="{{ app.request.uri }}" />
+        <meta property="og:image" content="{{ asset('build/images/app/yoga-icon.png') }}" />
+        <meta property="og:description" content="Online platform for yoga practitioners to share, inspire and get inspired." />
+        <meta property="og:site_name" content="WeAreYogis" />
+
+        {# Facebook #}
+        <meta property="fb:app_id" content="827114021178104" />
+    {% endblock %}
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('build/images/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('build/images/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('build/images/favicon/favicon-16x16.png') }}">
+
+    {% block title %}
+        <title>WeAreYogis</title>
+    {% endblock %}
+
+    {% block stylesheets %}
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/adminlte/adminlte.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/toastr/toastr.min.css') }}">
+        {{ encore_entry_link_tags('fonts') }}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+
+    {% block head_tags %}
+    {% endblock %}
+    {% if app.environment != 'dev' %}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-1GE2PNDX6T"></script>
+    {% endif %}
+</head>
+
+{% set currentPath = app.request.pathinfo %}
+{% set currentRoute = app.request.get('_route') %}
+{% set routeParams = app.request.get('_route_params') %}
+{% set hasCookieConsent = app.request.cookies.get('hasConsent') == 'true' %}
+
+<body class="hold-transition layout-top-nav">
+    <div class="wrapper">
+
+        <nav class="main-header navbar navbar-expand-md navbar-light
+            {% if is_granted('ROLE_PREVIOUS_ADMIN') %} navbar-yellow {% else %} navbar-white {% endif %}" >
+            <div class="container">
+                <!-- LOGO -->
+                <a href="/" class="navbar-brand" style="font-family:'Barkentina Test Regular';">
+                    <img style="max-width:40px;" src="{{ asset('build/images/app/yoga-icon-small.png')}}" alt="Yoga Logo" class="brand-image img-circle elevation-3">
+                    <span class="d-none d-sm-none d-md-inline-block inline-block d-lg-none">VRYogis</span>
+                    <span class="d-inline-block d-sm-inline-block d-md-none d-lg-inline-block">WeAreYogis</span>
+
+                </a>
+                <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- LEFT collapsable navbar links -->
+                <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+                    <ul class="navbar-nav" style="flex-direction:row;">
+                        {% block collapsable_navbar %}
+                            {% include('base_partials/navbar_top_left.html.twig') %}
+                        {% endblock %}
+                    </ul>
+                </div>
+
+                <!-- RIGHT navbar links -->
+                <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+                    {% block navbar_right %}
+                        {% include('base_partials/navbar_top_right.html.twig') %}
+                    {% endblock %}
+                </ul>
+            </div>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="content">
+                <div class="container">
+                    {% block flash_messages %}
+                        {% include('base_partials/flash_messages.html.twig') %}
+                    {% endblock %}
+
+                    {% block content %}
+                    {% endblock %}
+
+                    {% include 'base_partials/_empty_modal.html.twig' %}
+
+                    <div class="fixed-bottom" id="cookies-eu-banner-user" data-user="{% if app.user %}1{% else %}0{% endif %}">
+                        <div id="cookies-eu-banner" class="col-12 card mt-3" style="display: none;">
+                            <div class="row card-body" style="background-color:#Eef8fc;">
+                                <div class="col-lg-11 col-sm-10 mb-3">
+                                    We use cookies to provide you the service on this site, as well as to monitor and improve
+                                    its functionality and performance. Check our
+                                    <a href="{{ path('app_legal_page', {'page': 'privacy'}) }}" style="color:#df3487; font-weight:bold;">Privacy Policy</a>
+                                    for more info. By clicking on the accept button you are allowing us to use these cookies
+                                    and provide you with the best possible experience. Thank you for your trust.
+                                </div>
+                                <div class="col-lg-1 col-sm-2">
+                                    <button class="btn btn-sm btn-block" style="background-color:#0b88d0; color:white;" id="cookies-eu-accept">Accept</button>
+                                    <button class="btn btn-sm btn-default btn-block" id="cookies-eu-reject">Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <aside class="control-sidebar control-sidebar-dark">
+            <div class="p-3" style="background-color:#343a40;">
+                {% include('base_partials/sidebar.html.twig') %}
+            </div>
+        </aside>
+
+        <footer class="main-footer" style="text-align: center;">
+            {% set footerSelected = 'background-color:#f4c7f4; padding:2px 5px 3px 5px; border-radius:10px;' %}
+
+            Made with <i class="fas fa-heart"></i>&nbsp;&nbsp;
+            |&nbsp;&nbsp;WeAreYogis &copy; 2021&nbsp;&nbsp;
+            |&nbsp;&nbsp;<a href="{{ path('app_about_us') }}" style="color:inherit; {% if currentRoute == 'app_about_us' %}{{ footerSelected }}{% endif %}">About Us</a>&nbsp;&nbsp;
+            |&nbsp;&nbsp;<a href="{{ path('app_contact_us') }}" style="color:inherit; {% if currentRoute == 'app_contact_us' %}{{ footerSelected }}{% endif %}">Contact Us</a>&nbsp;&nbsp;
+            <div class="mt-1">
+                <a href="{{ path('app_legal_page', {'page': 'privacy'}) }}" style="color:#df3487; {% if currentPath == '/legal/privacy' %}{{ footerSelected }}{% endif %}">Privacy Policy</a>&nbsp;&nbsp;
+                |&nbsp;&nbsp;<a href="{{ path('app_legal_page', {'page': 'terms'}) }}" style="color:#df3487; {% if currentPath == '/legal/terms' %}{{ footerSelected }}{% endif %}">Terms of Service</a>&nbsp;&nbsp;
+                |&nbsp;&nbsp;<a href="{{ path('app_legal_page', {'page': 'disclaimer'}) }}" style="color:#df3487; {% if currentPath == '/legal/disclaimer' %}{{ footerSelected }}{% endif %}">Disclaimer</a>
+            </div>
+
+        </footer>
+    </div>
+
+    {% block javascripts %}
+        <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('plugins/adminlte/adminlte.min.js') }}"></script>
+        <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+</body>
+</html>

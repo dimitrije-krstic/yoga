@@ -1,0 +1,121 @@
+<p class="d-block d-sm-none" style="height:20px;">
+</p>
+
+{% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+    <p>
+        <a href="{{ path('app_admin_get_users', {'_switch_user': '_exit'}) }}">Exit Impersonation</a>
+        <div class="dropdown-divider"></div>
+    </p>
+{% endif %}
+
+<p>
+    <a href="{{ path('app_user_account') }}">
+        <i class="fas fa-cogs"></i> My Account
+    </a>
+</p>
+
+{% if is_granted('ROLE_ADMIN') %}
+    <p>
+        <a href="{{ path('app_admin_control_panel') }}">
+            <i class="fas fa-chart-area"></i> Control Panel
+        </a>
+    </p>
+    <p>
+        <div><i class="fas fa-users-cog"></i>
+            User Management
+        </div>
+        <div style="padding-left:20px;">
+            <a href="{{ path('app_admin_get_users') }}">&bull; Active Users</a>
+        </div>
+        <div style="padding-left:20px;">
+            <a href="{{ path('app_admin_list_admins') }}">&bull; Admins</a>
+        </div>
+        <div style="padding-left:20px;">
+            <a href="{{ path('app_admin_deleted_users') }}">&bull; exUsers</a>
+        </div>
+        <div style="padding-left:20px;">
+            <a href="{{ path('app_admin_blocked_users') }}">&bull; Blocked Users <i class="fas fa-shield-alt"></i></a>
+        </div>
+    </p>
+
+    <p>
+        <div><i class="fas fa-sticky-note"></i>
+            Post Management
+        </div>
+        <div style="padding-left:20px;">
+            <a href="{{ path('app_admin_tag_list') }}">&bull; Tags</a>
+        </div>
+        <div style="padding-left:20px;">
+            <a href="{{ path('app_admin_post_flagged_list') }}">&bull; Flagged Posts <i class="fas fa-flag"></i></a>
+        </div>
+        <div style="padding-left:20px;">
+            <a href="{{ path('app_admin_forum_flagged_list') }}">&bull; Flagged Forums <i class="fas fa-flag"></i></a>
+        </div>
+    </p>
+    <div class="dropdown-divider" style="border-top: 1px solid #777777;"></div>
+    <p>
+    <div class="mb-1">
+        <a href="{{ path('app_user_create_post') }}"><i class="fas fa-sticky-note"></i> Create new Post</a>
+    </div>
+    <div class="mb-1" style="padding-left:20px;">
+        <a href="{{ path('app_user_create_video_post') }}">Create new Video Post</a>
+    </div>
+    <div class="mb-1" style="padding-left:20px;">
+        <a href="{{ path('app_user_post_list') }}"> My Posts</a>
+    </div>
+    <div class="dropdown-divider" style="border-top: 1px solid #777777;"></div>
+{% elseif app.user %}
+    <div class="dropdown-divider" style="border-top: 1px solid #777777;"></div>
+    <p>
+        <div class="mb-1">
+            <a href="{{ path('app_user_create_post') }}"><i class="fas fa-sticky-note"></i> Create new Post</a>
+        </div>
+        <div class="mb-1" style="padding-left:20px;">
+            <a href="{{ path('app_user_create_video_post') }}">Create new Video Post</a>
+        </div>
+        <div class="mb-1" style="padding-left:20px;">
+            <a href="{{ path('app_user_post_list') }}"> My Posts</a>
+        </div>
+        <div class="mb-1" style="padding-left:20px;">
+            <a href="{{ path('app_post_favorites_page') }}">Favorite Posts <i class="far fa-star"></i></a>
+        </div>
+    </p>
+    <div class="dropdown-divider" style="border-top: 1px solid #777777;"></div>
+    {#
+    <p>
+        <div class="mb-1">
+            <a href="{{ path('app_cockpit_event_create') }}"><i class="far fa-calendar-alt"></i> Create new Event</a>
+        </div>
+        <div class="mb-1" style="padding-left:20px;">
+            <a href="{{ path('app_event_member_reviews', {'slug':app.user.slug}) }}">Received Reviews</a>
+        </div>
+
+    </p>
+    <div class="dropdown-divider" style="border-top: 1px solid #777777;"></div>
+    #}
+    <p>
+        <div class="mb-1 trigger-empty-modal" data-path="{{ path('app_message_notification_form')}}">
+            <a href="#"><i class="far fa-bell"></i>&nbsp;&nbsp;Notify Followers</a>
+        </div>
+        <div class="mb-1 trigger-empty-md-modal" data-path="{{ path('app_member_notifications', { 'slug': app.user.slug }) }}" style="padding-left:20px;" >
+            <a href="#">My Notifications</a>
+        </div>
+    </p>
+
+    <div class="dropdown-divider" style="border-top: 1px solid #777777;"></div>
+    
+    <p>
+        <div class="trigger-empty-modal" data-path="{{ path('app_message_forum_form')}}">
+            <a href="#"><i class="far fa-comments"></i> Start a Discussion</a>
+        </div>
+    </p>
+    <div class="dropdown-divider" style="border-top: 1px solid #777777;"></div>
+
+{% endif %}
+
+<p>
+    <a href="{{ path('app_logout') }}">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</p>
+

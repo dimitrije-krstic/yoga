@@ -1,0 +1,73 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+    <div class="row">
+        <div class="card col-md-12 mt-3">
+            <div class="card-body mb-3">
+                <h2>Deleted Users</h2>
+                <div class="row mb-3 col-lg-9 ">
+                    <a href="{{ path('app_admin_get_users') }}"><i class="fas fa-backward"></i> back to the user list</a>
+                </div>
+            </div>
+
+            <table class="table table-striped table-valign-middle text-center">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Posts</th>
+                    <th>Created</th>
+                    <th>Deleted</th>
+                    {% if is_granted('ROLE_MASTER') %}
+                        <th>Email</th>
+                        <th>Switch</th>
+                    {% endif %}
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for user in paginatedUsers %}
+                    <tr>
+                        <td>
+                            {{ user.id }}
+                        </td>
+                        <td>
+                            {{ user.name }}
+                        </td>
+                        <td>
+                            {{ user.posts|length }}
+                        </td>
+                        <td>
+                            {{ user.createdAt|date('m/d/Y') }}
+                        </td>
+                        <td>
+                            {{ user.deletedAt|date('m/d/Y') }}
+                        </td>
+                        {% if is_granted('ROLE_MASTER') %}
+                            <td>
+                                {{ user.email}}
+                            </td>
+                            <td>
+                                <a href="{{ path('app_user_account', { '_switch_user': user.email }) }}"
+                                   class="fas fa-random">
+                                </a>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="{% if is_granted('ROLE_MASTER') %}7{% else %}5{% endif %}" class="text-center">
+                            No deleted users
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="mt-4">
+                {{ knp_pagination_render(paginatedUsers) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

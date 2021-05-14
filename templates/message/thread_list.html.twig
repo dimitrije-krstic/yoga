@@ -1,0 +1,104 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mt-3">
+        <div class="card card-info card-outline card-outline-tabs">
+
+            {% include 'message/_header_tabs.html.twig' %}
+
+            <div class="card-body" style="padding:0px; font-family: Arial, Helvetica, sans-serif; font-size: 17px;">
+                <div class="row">
+
+                    <div class="col-12 col-md-12 col-lg-9 col-xl-6">
+                        <div class="col-12">
+                            {% include 'base_partials/_simple_search.html.twig' with {'name': 'query', 'placeholder': 'Search in subject...'} %}
+                        </div>
+                        <div class="col-12">
+                        {% for thread in threads %}
+                                <a id="{{ thread.id }}">
+                                </a>
+                                <div class="col-12 mb-3" style="{% if selectedThread and thread.id == selectedThread.id %}background-color:#ffe0da;{% endif %}
+                                    border:1px solid #ccc; border-radius:20px; padding-top:5px; padding-bottom:5px;"
+                                >
+                                    <div class="row">
+                                        <div class="col-2 col-sm-1" style="margin-top:5px;">
+                                            {% if thread.memberSlug and activeTab != 'forum' and activeTab != 'notifications' %}
+                                                <a href='#' class="trigger-empty-modal tooltip-show" title="member info"
+                                                   data-path="{{ path('app_member_details', {'slug': thread.memberSlug })}}">
+                                                    <img style="border-radius: 50%; max-width:40px;"
+                                                         src="{{ asset(thread.memberImage()) }}"
+                                                    >
+                                                </a>
+                                            {% else %}
+                                                <img style="border-radius: 50%; max-width:40px;"
+                                                     src="{{ asset(thread.memberImage())}}"
+                                                >
+                                            {% endif %}
+                                        </div>
+
+                                        <a class="col-10 col-sm-11"
+                                           href="{{ path(currentRoute, routeParams|merge({'thread': thread.id, 'page': pagination.page, 'query': query, '_fragment': thread.id})) }}" style="color:inherit;"
+                                        >
+                                            <div class="col-12" style="margin-left:12px;">
+                                                {% if not thread.read %}
+                                                    <i class="far fa-envelope" style="padding-right:5px; color:red"></i>
+                                                {% endif %}
+                                                {{ thread.subject|capitalize }}
+                                            </div>
+                                            <div class="col-12" style="margin-left:12px;">
+                                                {% if activeTab != 'forum' and activeTab != 'notifications' %}
+                                                    {{ thread.memberName|split(' ')[0] }},
+                                                {% endif %}
+                                                <small style="white-space: nowrap;">
+                                                    {{ thread.updatedAt|ago}}, <i class="far fa-comment"></i>&nbsp;{{ thread.messageCount }}
+                                                </small>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            {% if selectedThread and thread.id == selectedThread.id %}
+                                <div class="threadMessages mt-1 col-12"></div>
+                            {% endif %}
+
+                        {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-12 col-lg-9 col-xl-6 mt-3">
+                        {% if selectedThread and selectedThreadMessages %}
+                            <div class="threadMessagesMain col-12" style="position:sticky; top: 0; width: 100%;">
+                                {% include 'message/_thread.html.twig' %}
+                            </div>
+                            {% include 'base_partials/_modal.html.twig' with {
+                                'dataTargetId': 'threadDelete',
+                                'modalSize': 'modal-md',
+                                'backgroundColor': 'bg-danger',
+                                'title': 'Delete messages',
+                                'bodyText': {
+                                    1: 'Delete this thread and all its messages.'
+                                },
+                                'confirmationPath': path('app_message_thread_delete', {'activeTab': activeTab, 'id': selectedThread.id }) ,
+                                'confirmationButtonText': 'Delete'
+                            } %}
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12">
+                {{  knp_pagination_render(pagination) }}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+    {{ encore_entry_script_tags('messages') }}
+{% endblock %}

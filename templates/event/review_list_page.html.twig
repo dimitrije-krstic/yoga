@@ -1,0 +1,50 @@
+{% extends('base.html.twig') %}
+
+{% block content %}
+    <div class="row">
+        <div class="card col-12 mt-3">
+            <div class="card-body">
+
+                <div class="row mb-3">
+                    <div class="col-12 col-sm-3 col-md-2 col-lg-2">
+                        <a href='#' class="trigger-empty-modal"  data-path="{{ path('app_member_details', {'slug': member.slug })}}">
+                            <img class="tooltip-show" style="border-radius: 50%; padding-right:20px; max-width:120px;" title="organizer info"
+                                 src="{{ asset(member.profileImagePath) }}">
+                        </a>
+                    </div>
+
+                    <div class="col-12 col-sm-9 col-md-10 col-lg-10 break-long-words" style="padding-left:2vw;">
+                        <h4>{{ member.name }}</h4>
+                        <div style="padding-bottom:10px;">
+                           Events held: {{ pastEvents }}
+                        </div>
+                        <h6>
+                            <a href="{{ path('app_member_upcoming_events', {'slug': member.slug }) }}">
+                                See upcoming events...
+                            </a>
+                        </h6>
+                    </div>
+                </div>
+
+                {% if pagination is not empty %}
+                    <div class="row mt-3">
+                        {% for review in pagination %}
+                            <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+                                {% include '/event/_review_teaser.html.twig' %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if pagination is not empty %}
+                    <div class="row">
+                        <div class="col-12">
+                            {{  knp_pagination_render(pagination) }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,56 @@
+{% extends('base.html.twig') %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+    {{ parent() }}
+
+{% endblock %}
+
+{% block content %}
+<div class="row col-12">
+    <div class="card col-12 mt-3">
+        <div class="card-header">
+            <h2>{% if event %}Edit Your Event{% else %}Create a<img src="{{ asset('build/images/app/free-sm.png') }}" width="100px">Online Event{% endif %}</h2>
+        </div>
+
+        <div class="card-body">
+            <div class="row col-12">
+                <div class="col-lg-8 mb-4">
+                    <div class="row col-lg-12 mb-3" style="justify-content:space-between;">
+                        <a href="{{ path('app_cockpit_event_list') }}"><i class="fas fa-backward"></i> back to the list</a>
+                        {% if event %}
+                            <a href="{{ path('app_event_details', {'id': event.id}) }}" class="btn btn-default">
+                                {% if event.published is null %}Preview{% else %}View{% endif %}
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="row col-12">
+                        {% if event %}{% set button = 'Update' %}{% else %}{% set button = 'Create' %}{% endif %}
+                        <div class="col-12 mb-4">
+                            {{ include('event/cockpit/_form.html.twig', {
+                                buttonText: button
+                            }) }}
+                        </div>
+                    </div>
+
+                </div>
+
+                {% if event and event.published %}
+                    <div class="col-lg-4 mb-4">
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+    <script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    {{ encore_entry_script_tags('event') }}
+{% endblock %}

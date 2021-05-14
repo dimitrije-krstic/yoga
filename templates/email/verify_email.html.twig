@@ -1,0 +1,40 @@
+{% extends ('email/base.html.twig')  %}
+
+{% block emailbody %}
+
+    <row>
+        <columns>
+            <h3>
+                <center>
+                    <div>
+                        Hi again, {{ email.toName|split(' ')[0] }}
+                    </div>
+                </center>
+            </h3>
+            <spacer size="35"></spacer>
+            <center>
+                <div>
+                    To verify your email please click on the button below.
+                </div>
+            </center>
+        </columns>
+    </row>
+
+    <row>
+        <columns>
+            <spacer size="35"></spacer>
+            <center>
+                <button style="border-radius: .1em;" href="{{ verifyUrl }}">Verify your email</button>
+            </center>
+        </columns>
+    </row>
+
+    <row>
+        <columns>
+            <center>
+                This link will expire in {{ verifyUrlExpiresAt|date('g') }} hour(s).
+            </center>
+        </columns>
+    </row>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% if myEvents is not defined %}
+    {% if event.start > date() %}
+        <a href="{{ path('app_event_bookmark', { 'id': event.id }) }}" class="btn btn-secondary btn-block">
+            Remove from bookmarks
+        </a>
+    {% else %}
+        <a href="{{ path('app_event_review', { 'id': event.id }) }}" class="btn btn-secondary btn-block">
+            Leave a review
+        </a>
+    {% endif %}
+{% else %}
+    {% if event.start > date() and event.cancelled is null %}
+
+        {% if event.published is null %}
+            <div class="mb-2">
+                <a href="#" class="btn btn-success btn-block" data-toggle="modal" data-target="{{'#eventPublish-' ~ event.id }}">
+                    Publish
+                </a>
+                {% include 'base_partials/_modal.html.twig' with {
+                    'dataTargetId': 'eventPublish-'~ event.id,
+                    'modalSize': 'modal-md',
+                    'backgroundColor': 'bg-success',
+                    'title': 'Publish Your Event',
+                    'bodyText': {
+                        1: 'TITLE: '~ event.title
+                    },
+                    'confirmationPath': path('app_cockpit_event_publish', app.request.query.all|merge({ 'id': event.id })),
+                    'confirmationButtonText': 'Publish'
+                } %}
+            </div>
+        {% endif %}
+
+        <div>
+            <a class="btn btn-block {% if event.published is null  %}btn-primary{% else %}btn-default{% endif %}"
+               href="{{ path('app_cockpit_event_edit', app.request.query.all|merge({ 'id': event.id})) }}">
+                Edit
+            </a>
+        </div>
+
+    {% endif %}
+
+    {% if event.start < date() and (event.published is null or event.cancelled is not null or eventDataWrapper.participantCount(event) < 1) %}
+        <a href="{{ path('app_cockpit_event_delete', { 'id': event.id }) }}" class="btn btn-default btn-block">
+            Remove lapsed event
+        </a>
+    {% endif %}
+{% endif %}
+
+
+

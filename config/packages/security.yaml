@@ -1,0 +1,42 @@
+security:
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+            lazy: true
+            provider: app_user_provider
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+                    - App\Security\GoogleAuthenticator
+                    - App\Security\FacebookAuthenticator
+                entry_point: App\Security\LoginFormAuthenticator
+            logout:
+                path: app_logout
+                target: /
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 2592000 # 30 days in seconds
+            switch_user: true #?_switch_user=
+
+    role_hierarchy:
+        ROLE_MASTER:
+            - ROLE_ADMIN
+            - ROLE_ALLOWED_TO_SWITCH
+        # ROLE_USER (default)
+        # more roles in future: ROLE_CENTRE
+
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/cockpit, roles: ROLE_USER }
